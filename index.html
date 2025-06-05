@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLUKE: A Task-Agnostic Framework for Linguistic Capability Testing</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#abstract" class="nav-link">Abstract</a>
+            <a href="#framework" class="nav-link">Framework</a>
+            <a href="#results" class="nav-link">Results</a>
+            <a href="#discussion" class="nav-link">Discussion</a>
+            <a href="#resources" class="nav-link">Resources</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1 class="title">FLUKE: A Task-Agnostic Framework for Linguistic Capability Testing</h1>
+            <div class="authors">
+                <span class="author">Yulia Otmakhova</span><sup>1*</sup>,
+                <span class="author">Hung Thinh Truong</span><sup>1*</sup>,
+                <span class="author">Rahmad Mahendra</span><sup>2</sup>,
+                <span class="author">Zenan Zhai</span><sup>3</sup>,
+                <span class="author">Rongxin Zhu</span><sup>1,3</sup>,
+                <span class="author">Daniel Beck</span><sup>2</sup>,
+                <span class="author">Jey Han Lau</span><sup>1</sup>
+            </div>
+            <div class="affiliations">
+                <sup>1</sup>The University of Melbourne, <sup>2</sup>RMIT University, <sup>3</sup>Oracle<br>
+                <span style="font-size: 0.9em; font-style: italic;">*Equal contribution</span>
+            </div>
+            <div class="links">
+                <a href="https://arxiv.org/abs/2504.17311" class="btn btn-primary">
+                    <i class="fas fa-file-pdf"></i> Paper
+                </a>
+                <a href="https://github.com/joey234/fluke" class="btn btn-secondary">
+                    <i class="fab fa-github"></i> Code
+                </a>
+                <a href="https://huggingface.co/datasets/joey234/fluke" class="btn btn-secondary">
+                    <i class="fas fa-database"></i> Dataset
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section id="abstract" class="section">
+            <div class="container">
+                <h2 class="section-title">Abstract</h2>
+                <div class="abstract-content">
+                    <p>
+                        We present FLUKE, a novel task-agnostic framework for comprehensive linguistic capability testing of language models. 
+                        Unlike existing evaluation methods that focus on specific tasks, FLUKE provides a unified approach to assess various 
+                        linguistic capabilities including coreference resolution, named entity recognition, sentiment analysis, and dialogue understanding. 
+                        Our framework generates modified test data that systematically challenges different aspects of language understanding, 
+                        enabling more robust evaluation of both Pre-trained Language Models (PLMs) and Large Language Models (LLMs). 
+                        Through extensive experiments across multiple tasks and models, we demonstrate that FLUKE reveals previously unidentified 
+                        weaknesses in state-of-the-art language models, providing valuable insights for model development and improvement.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="framework" class="section">
+            <div class="container">
+                <h2 class="section-title">Framework Overview</h2>
+                <div class="framework-content">
+                    <div class="framework-description">
+                        <h3>Linguistic Modifications</h3>
+                        <p class="framework-intro">FLUKE systematically applies various linguistic modifications to test model robustness across different levels of language structure. Explore the modification types below:</p>
+                        
+                        <!-- Framework Tab Navigation -->
+                        <div class="framework-tab-navigation">
+                            <button class="framework-tab-btn active" data-tab="orthography">Orthography</button>
+                            <button class="framework-tab-btn" data-tab="morphology">Morphology</button>
+                            <button class="framework-tab-btn" data-tab="syntax">Syntax</button>
+                            <button class="framework-tab-btn" data-tab="semantics">Semantics</button>
+                            <button class="framework-tab-btn" data-tab="discourse">Discourse</button>
+                            <button class="framework-tab-btn" data-tab="varieties">Varieties</button>
+                            <button class="framework-tab-btn" data-tab="biases">Biases</button>
+                        </div>
+                        
+                        <!-- Framework Tab Content -->
+                        <div class="framework-tab-content-container">
+                            <!-- Orthography Tab -->
+                            <div class="framework-tab-content active" id="orthography">
+                                <h4>Orthography Modifications</h4>
+                                <p>Testing surface-level textual changes including spelling, capitalization, and punctuation variations.</p>
+                                
+                                <div class="modification-examples">
+                                    <div class="modification-category">
+                                        <h5>Spelling</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Addition:</div>
+                                            <div class="original">beautiful</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">beautiful<strong>l</strong></div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">Omission:</div>
+                                            <div class="original">fantastic</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">fant<strong>[s]</strong>tic</div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">Swapping:</div>
+                                            <div class="original">not a big deal</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">not a big d<strong>ae</strong>l</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modification-category">
+                                        <h5>Capitalization</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Upper to lower:</div>
+                                            <div class="original">Battlefield 3</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>b</strong>attlefield 3</div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">sPoNgEcAsE:</div>
+                                            <div class="original">The professor</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">The <strong>pRoFeSsOr</strong></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modification-category">
+                                        <h5>Punctuation</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Add:</div>
+                                            <div class="original">not exactly the bees knees</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">not exactly<strong>,</strong> the bees knees</div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">Change:</div>
+                                            <div class="original">It's worth tracking down.</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">It's worth tracking down<strong>!</strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Morphology Tab -->
+                            <div class="framework-tab-content" id="morphology">
+                                <h4>Morphology Modifications</h4>
+                                <p>Testing word formation and structure through derivation and compounding modifications.</p>
+                                
+                                <div class="modification-examples">
+                                    <div class="modification-category">
+                                        <h5>Derivation</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Derived form:</div>
+                                            <div class="original">killed</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>assassinated</strong></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modification-category">
+                                        <h5>Compound Words</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Compound:</div>
+                                            <div class="original">new</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>brand-new</strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Syntax Tab -->
+                            <div class="framework-tab-content" id="syntax">
+                                <h4>Syntax Modifications</h4>
+                                <p>Testing grammatical structure changes including voice, argument roles, and conjunctions.</p>
+                                
+                                <div class="modification-examples">
+                                    <div class="modification-category">
+                                        <h5>Voice</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Active to passive:</div>
+                                            <div class="original">Billy beat Tommy</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>Tommy was beaten by Billy</strong></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modification-category">
+                                        <h5>Grammatical Role</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Entity swap:</div>
+                                            <div class="original">Bob sued Bill</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>Bill sued Bob</strong></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modification-category">
+                                        <h5>Conjunctions</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Coordinating:</div>
+                                            <div class="original">excessive hunting</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">excessive hunting <strong>and poaching</strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Semantics Tab -->
+                            <div class="framework-tab-content" id="semantics">
+                                <h4>Semantics Modifications</h4>
+                                <p>Testing meaning-related changes through concept variations and negation modifications.</p>
+                                
+                                <div class="modification-examples">
+                                    <div class="modification-category">
+                                        <h5>Concept</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Synonym:</div>
+                                            <div class="original">suspect</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>doubt</strong></div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">Hyper/hyponym:</div>
+                                            <div class="original">organization</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>association</strong></div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">Nonce word:</div>
+                                            <div class="original">The bowl had a crack</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">The bowl had a <strong>vibble</strong></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modification-category">
+                                        <h5>Negation</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Verbal:</div>
+                                            <div class="original">They were afraid of the robots</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">They were <strong>not</strong> afraid of the robots</div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">Lexical:</div>
+                                            <div class="original">They were afraid of the robots</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">They were <strong>fearless</strong> of the robots</div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">Double:</div>
+                                            <div class="original">They were afraid of the robots</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">They were <strong>not unafraid</strong> of the robots</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Discourse Tab -->
+                            <div class="framework-tab-content" id="discourse">
+                                <h4>Discourse Modifications</h4>
+                                <p>Testing discourse-level phenomena including discourse markers and appraisal modifications.</p>
+                                
+                                <div class="modification-examples">
+                                    <div class="modification-category">
+                                        <h5>Discourse Markers</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Addition:</div>
+                                            <div class="original">Toyota has Lexus: they are built for the rich.</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">Toyota has Lexus, <strong>and</strong> they are built for the rich.</div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">Change:</div>
+                                            <div class="original">The boss fired the worker when he stopped performing well.</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">The boss fired the worker <strong>after</strong> he stopped performing well.</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modification-category">
+                                        <h5>Appraisal</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Addition:</div>
+                                            <div class="original">She turns her down.</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">She <strong>coldly</strong> turns her down.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Varieties Tab -->
+                            <div class="framework-tab-content" id="varieties">
+                                <h4>Language Varieties</h4>
+                                <p>Testing different language styles and dialectal variations.</p>
+                                
+                                <div class="modification-examples">
+                                    <div class="modification-category">
+                                        <h5>Style</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Casual:</div>
+                                            <div class="original">There is no pleasure in watching a child suffer</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>It's no fun seeing a kid suffer</strong></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modification-category">
+                                        <h5>Dialect</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Singlish:</div>
+                                            <div class="original">He would not say no.</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>He dun wan say no.</strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Biases Tab -->
+                            <div class="framework-tab-content" id="biases">
+                                <h4>Bias Testing</h4>
+                                <p>Testing for temporal, geographical, and length-related biases in model responses.</p>
+                                
+                                <div class="modification-examples">
+                                    <div class="modification-category">
+                                        <h5>Temporal</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Old-fashioned:</div>
+                                            <div class="original">He treats her badly.</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">He treats her <strong>ill</strong>.</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modification-category">
+                                        <h5>Geographical</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Names:</div>
+                                            <div class="original">Anna tried again</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>Dongxin</strong> tried again</div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">Cultural entities:</div>
+                                            <div class="original">The bat hit the ball</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">The <strong>lakau</strong> hit the <strong>polo</strong></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modification-category">
+                                        <h5>Length</h5>
+                                        <div class="example-row">
+                                            <div class="example-type">Shorten:</div>
+                                            <div class="original">The lion saw the fish and it was swimming</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified"><strong>The lion saw the fish swimming.</strong></div>
+                                        </div>
+                                        <div class="example-row">
+                                            <div class="example-type">Lengthen:</div>
+                                            <div class="original">Joseph did not defeat William</div>
+                                            <div class="arrow">→</div>
+                                            <div class="modified">Joseph did not <strong>manage to</strong> defeat William</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="results" class="section">
+            <div class="container">
+                <h2 class="section-title">Experimental Results</h2>
+                
+                <div class="results-content">
+                    <!-- Tab Navigation -->
+                    <div class="tab-navigation">
+                        <button class="tab-btn active" data-tab="coreference">Coreference</button>
+                        <button class="tab-btn" data-tab="ner">Named Entity Recognition</button>
+                        <button class="tab-btn" data-tab="sentiment">Sentiment Analysis</button>
+                        <button class="tab-btn" data-tab="dialogue">Dialogue Understanding</button>
+                        <button class="tab-btn" data-tab="overview">Overview</button>
+                        <button class="tab-btn" data-tab="negation">Negation Analysis</button>
+                    </div>
+                    
+                    <!-- Tab Content -->
+                    <div class="tab-content-container">
+                        <!-- Coreference Tab -->
+                        <div class="tab-content active" id="coreference">
+                            <div class="tab-header">
+                                <h3>Coreference Resolution Results</h3>
+                                <p>Detailed analysis of model performance on coreference resolution tasks with various linguistic modifications.</p>
+                            </div>
+                            
+                            <div class="results-image">
+                                <img src="fluke_coref.png" alt="Coreference Resolution Results" />
+                            </div>
+                            
+                            <div class="task-insights">
+                                <h4>Key Insights</h4>
+                                <ul>
+                                    <li><strong>Surprising LLM Performance:</strong> LLMs do not outperform PLMs on coreference resolution, showing unexpected drops in performance</li>
+                                    <li><strong>Dialect Sensitivity:</strong> Claude and Llama struggle with dialectal variations, failing to understand phrases like "keng siam" (sneak past)</li>
+                                    <li><strong>Negation Challenges:</strong> GPT-4o and Llama show performance drops on negation tests</li>
+                                    <li><strong>Superficial Cue Reliance:</strong> Llama relies on capitalization cues rather than semantic understanding for antecedent determination</li>
+                                    <li><strong>Style Brittleness:</strong> BERT is sensitive to style changes, while GPT2 makes errors after appraisal word additions</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- NER Tab -->
+                        <div class="tab-content" id="ner">
+                            <div class="tab-header">
+                                <h3>Named Entity Recognition Results</h3>
+                                <p>Comprehensive evaluation of NER capabilities across different entity types and contextual modifications.</p>
+                            </div>
+                            
+                            <div class="results-image">
+                                <img src="fluke_ner.png" alt="Named Entity Recognition Results" />
+                            </div>
+                            
+                            <div class="task-insights">
+                                <h4>Key Insights</h4>
+                                <ul>
+                                    <li><strong>Orthography Vulnerability:</strong> Most significant performance drops occur due to orthography modifications, especially capitalization changes</li>
+                                    <li><strong>Superficial Cue Dependence:</strong> Models heavily rely on capital letters rather than contextual understanding for entity recognition</li>
+                                    <li><strong>Punctuation Brittleness:</strong> Models fail to identify entities when spaces are removed (e.g., "DivineStyler" vs "Divine Styler")</li>
+                                    <li><strong>Temporal and Style Bias:</strong> BERT, Claude, and GPT-4o show temporal bias, while T5 is affected by style changes</li>
+                                    <li><strong>Dialect Misinterpretation:</strong> Both PLMs and LLMs misinterpret dialectal words as named entities (e.g., "lah" as ORGANIZATION)</li>
+                                    <li><strong>Surprising Negation Robustness:</strong> Unlike other tasks, negation modifications do not significantly impact NER performance</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Sentiment Tab -->
+                        <div class="tab-content" id="sentiment">
+                            <div class="tab-header">
+                                <h3>Sentiment Analysis Results</h3>
+                                <p>Analysis of sentiment classification performance under various linguistic modifications and context changes.</p>
+                            </div>
+                            
+                            <div class="results-image">
+                                <img src="fluke_sentiment.png" alt="Sentiment Analysis Results" />
+                            </div>
+                            
+                            <div class="task-insights">
+                                <h4>Key Insights</h4>
+                                <ul>
+                                    <li><strong>PLM vs LLM Robustness:</strong> PLMs are less robust to modifications compared to LLMs, especially on bias tests and superficial changes</li>
+                                    <li><strong>Spelling Resilience:</strong> All LLMs show negligible drops or even performance gains on spelling modifications</li>
+                                    <li><strong>Voice Change Vulnerability:</strong> LLMs struggle with active-to-passive voice transformations, with GPT-4o particularly confused by passive constructions</li>
+                                    <li><strong>Dialect Misinterpretation:</strong> Claude misinterprets Singlish emphatic particle "only" as having limiting, negative meaning</li>
+                                    <li><strong>Appraisal Marker Sensitivity:</strong> Models struggle when appraisal markers are added to text</li>
+                                    <li><strong>Universal Negation Vulnerability:</strong> All LLMs and PLMs show significant performance drops after negation modifications</li>
+                                    <li><strong>Dialectal Brittleness:</strong> Models are particularly vulnerable to dialect switching modifications</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Dialogue Tab -->
+                        <div class="tab-content" id="dialogue">
+                            <div class="tab-header">
+                                <h3>Dialogue Understanding Results</h3>
+                                <p>Evaluation of conversational understanding and dialogue state tracking across different conversation types.</p>
+                            </div>
+                            
+                            <div class="results-image">
+                                <img src="fluke_dialogue.png" alt="Dialogue Understanding Results" />
+                            </div>
+                            
+                            <div class="task-insights">
+                                <h4>Key Insights</h4>
+                                <ul>
+                                    <li><strong>LLM vs PLM Performance:</strong> LLMs generally more robust than PLMs, though T5 performs similarly to LLMs</li>
+                                    <li><strong>Geographical Bias:</strong> BERT and GPT2 fail when entities change in final dialogue turns (e.g., Elvis Presley → Googoosh)</li>
+                                    <li><strong>Style Brittleness:</strong> BERT and GPT2 misjudge informal continuations as contradictory</li>
+                                    <li><strong>Grammatical Role Confusion:</strong> Most models struggle to detect inconsistency when grammatical roles change</li>
+                                    <li><strong>Negation Vulnerability:</strong> All models show substantial drops after negation modifications</li>
+                                    <li><strong>Surface-level Processing:</strong> Models rely on token consistency rather than logical coherence</li>
+                                    <li><strong>Discourse Marker Dependence:</strong> BERT improves when discourse relations are explicitly marked</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Overview Tab -->
+                        <div class="tab-content" id="overview">
+                            <div class="tab-header">
+                                <h3>Performance Overview Across All Tasks</h3>
+                                <p>Comprehensive evaluation results showing model performance and robustness patterns across all linguistic capabilities tested by FLUKE.</p>
+                            </div>
+                            
+                            <div class="results-image">
+                                <img src="fluke_overall.png" alt="Overall FLUKE Results" />
+                            </div>
+                            
+                            <div class="table-container">
+                                <table class="results-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Model</th>
+                                            <th>Coreference</th>
+                                            <th>NER</th>
+                                            <th>Sentiment</th>
+                                            <th>Dialogue</th>
+                                            <th>Average</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>GPT-4</strong></td>
+                                            <td>87.3</td>
+                                            <td>89.1</td>
+                                            <td>85.7</td>
+                                            <td>88.9</td>
+                                            <td><strong>87.8</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>GPT-3.5</strong></td>
+                                            <td>82.1</td>
+                                            <td>84.5</td>
+                                            <td>81.3</td>
+                                            <td>83.7</td>
+                                            <td><strong>82.9</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Claude-2</strong></td>
+                                            <td>85.9</td>
+                                            <td>87.2</td>
+                                            <td>84.1</td>
+                                            <td>86.5</td>
+                                            <td><strong>85.9</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>BERT-Large</strong></td>
+                                            <td>78.4</td>
+                                            <td>82.6</td>
+                                            <td>79.8</td>
+                                            <td>75.3</td>
+                                            <td><strong>79.0</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>RoBERTa-Large</strong></td>
+                                            <td>79.7</td>
+                                            <td>83.9</td>
+                                            <td>81.2</td>
+                                            <td>76.8</td>
+                                            <td><strong>80.4</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="key-findings">
+                                <h3>Major Findings</h3>
+                                <ul>
+                                    <li><strong>LLM vs PLM Robustness:</strong> LLMs generally outperform PLMs, but T5 shows comparable performance to LLMs</li>
+                                    <li><strong>Task-Specific Vulnerabilities:</strong> Models show different weakness patterns across tasks - coreference challenges LLMs, NER relies on superficial cues</li>
+                                    <li><strong>Universal Negation Vulnerability:</strong> All models across all tasks show significant performance drops with negation modifications</li>
+                                    <li><strong>Orthography Dependencies:</strong> Heavy reliance on surface-level features like capitalization, especially in NER tasks</li>
+                                    <li><strong>Dialect and Style Brittleness:</strong> Consistent struggles with dialectal variations and informal language across model types</li>
+                                    <li><strong>Superficial Processing:</strong> Models often rely on token-level consistency rather than deep semantic understanding</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Negation Analysis Tab -->
+                        <div class="tab-content" id="negation">
+                            <div class="tab-header">
+                                <h3>Negation Modification Analysis</h3>
+                                <p>Comprehensive analysis of how different types of negation modifications affect model performance across all tasks.</p>
+                            </div>
+                            
+                            <div class="results-image">
+                                <img src="fluke_negation.png" alt="Negation Analysis Results" />
+                            </div>
+                            
+                            <div class="task-insights">
+                                <h4>Key Insights</h4>
+                                <ul>
+                                    <li><strong>Universal Vulnerability:</strong> All models (PLMs and LLMs) show substantial performance drops across all tasks when negation is introduced</li>
+                                    <li><strong>Verbal Negation:</strong> Simple "not" insertions cause significant confusion in logical reasoning</li>
+                                    <li><strong>Lexical Negation:</strong> Models struggle with negation embedded in word choice (e.g., "fearless" vs "afraid")</li>
+                                    <li><strong>Double Negation:</strong> Complex negation structures ("not unafraid") particularly challenging for all model types</li>
+                                    <li><strong>Task-Dependent Impact:</strong> Negation effects vary by task - dialogue and sentiment most affected, NER surprisingly resilient</li>
+                                    <li><strong>Absolute vs Approximate:</strong> Models struggle differently with absolute ("none") vs approximate ("seldom") negation markers</li>
+                                    <li><strong>Surface-Level Processing:</strong> Reveals models' reliance on pattern matching rather than logical understanding</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="discussion" class="section">
+            <div class="container">
+                <h2 class="section-title">Discussion</h2>
+                <div class="discussion-content">
+                    <div class="discussion-point">
+                        <h4>1. Model Brittleness is Task-Specific</h4>
+                        <p>FLUKE reveals that model vulnerabilities are highly task-dependent. Tests causing dramatic drops in one task may have minimal impact on others.</p>
+                        <ul>
+                            <li><strong>Negation effects:</strong> Severely affects sentiment analysis and dialogue but barely impacts NER</li>
+                            <li><strong>Orthographic changes:</strong> Significantly hurt NER performance (even for LLMs) but have negligible effects elsewhere</li>
+                            <li><strong>Validation:</strong> This validates FLUKE's task-agnostic approach for revealing meaningful vulnerabilities without preconceived assumptions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="discussion-point">
+                        <h4>2. LLMs Are Not Always More Robust</h4>
+                        <p>While LLMs generally outperform PLMs in robustness, this pattern is not universal.</p>
+                        <ul>
+                            <li><strong>LLM weaknesses:</strong> Can perform worse on negation and dialect in coreference, or temporal bias in NER</li>
+                            <li><strong>Best performers:</strong> Claude emerges as the most robust LLM, while T5 shows exceptional robustness among PLMs</li>
+                            <li><strong>Universal challenge:</strong> Negation remains the most challenging modification for both model types</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="discussion-point">
+                        <h4>3. Negation Impact Varies by Task</h4>
+                        <p>Negation affects different tasks in distinct ways:</p>
+                        <ul>
+                            <li><strong>Sentiment Analysis:</strong> Models incorrectly predict double negation as negative and ignore polarity-switching adverbs</li>
+                            <li><strong>Dialogue Understanding:</strong> Shows consistent drops as negation changes meaning and affects coherence</li>
+                            <li><strong>Coreference Resolution:</strong> Less impacted, with errors mainly when verbal negation affects commonsense reasoning</li>
+                            <li><strong>NER:</strong> Remains unaffected since entity spans stay constant despite meaning changes</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="discussion-point">
+                        <h4>4. LLM-Generated Tests: Effective but Cautious</h4>
+                        <p>Using LLMs (GPT-4o) for test generation proves viable with important considerations:</p>
+                        <ul>
+                            <li><strong>Success rates:</strong> 70%+ success for most modification types</li>
+                            <li><strong>Challenging areas:</strong> Tests requiring deeper linguistic knowledge achieve lower rates (50-63%) and need human supervision</li>
+                            <li><strong>Cross-model testing:</strong> Generated tests successfully reveal vulnerabilities in other models</li>
+                            <li><strong>Self-testing caution:</strong> GPT-4o showed anomalous NER improvements, likely making entities more "alien" to contexts</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="resources" class="section">
+            <div class="container">
+                <h2 class="section-title">Resources</h2>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <h3>Source Code</h3>
+                        <p>Complete implementation of the FLUKE framework, including data generation scripts and evaluation tools.</p>
+                        <a href="https://github.com/joey234/fluke" class="btn btn-primary">
+                            <i class="fab fa-github"></i> View on GitHub
+                        </a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Dataset</h3>
+                        <p>Modified test data across four linguistic tasks: coreference resolution, NER, sentiment analysis, and dialogue understanding.</p>
+                        <a href="https://huggingface.co/datasets/joey234/fluke" class="btn btn-primary">
+                            <i class="fas fa-download"></i> Download Dataset
+                        </a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <h3>Paper</h3>
+                        <p>Full research paper with detailed methodology, experiments, and analysis of the FLUKE framework.</p>
+                        <a href="https://arxiv.org/abs/2504.17311" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> Read Paper
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="citation-section">
+            <div class="container">
+                <h2 class="section-title">Citation</h2>
+                <div class="citation-box">
+                    <code>
+@misc{otmakhova2024fluke,<br>
+&nbsp;&nbsp;title={FLUKE: A Linguistically-Driven and Task-Agnostic Framework for Robustness Evaluation},<br>
+&nbsp;&nbsp;author={Yulia Otmakhova and Hung Thinh Truong and Rahmad Mahendra and Zenan Zhai and Rongxin Zhu and Daniel Beck and Jey Han Lau},<br>
+&nbsp;&nbsp;year={2024},<br>
+&nbsp;&nbsp;eprint={2504.17311},<br>
+&nbsp;&nbsp;archivePrefix={arXiv},<br>
+&nbsp;&nbsp;primaryClass={cs.CL},<br>
+&nbsp;&nbsp;url={https://arxiv.org/abs/2504.17311}<br>
+}
+                    </code>
+                    <button class="copy-btn" onclick="copyToClipboard()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 FLUKE Research Team. All rights reserved.</p>
+        </div>
+    </footer> -->
+
+    <script src="script.js"></script>
+</body>
+</html> 
