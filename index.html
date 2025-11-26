@@ -556,6 +556,189 @@
             border-left: 3px solid var(--gray-300);
         }
 
+        /* Demo Tabs */
+        .demo-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--gray-300);
+        }
+
+        .demo-tab {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-500);
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.2s;
+        }
+
+        .demo-tab:hover {
+            color: var(--gray-900);
+        }
+
+        .demo-tab.active {
+            color: var(--gray-900);
+            border-bottom-color: var(--accent);
+        }
+
+        .demo-panel {
+            display: none;
+        }
+
+        .demo-panel.active {
+            display: block;
+        }
+
+        /* Batch Processing */
+        .batch-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .batch-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .batch-field label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+
+        .batch-field input, .batch-field select {
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+        }
+
+        .batch-field input:focus, .batch-field select:focus {
+            outline: none;
+            border-color: var(--gray-900);
+        }
+
+        .file-upload {
+            border: 2px dashed var(--gray-300);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .file-upload:hover {
+            border-color: var(--gray-500);
+        }
+
+        .file-upload.has-file {
+            border-color: var(--blue);
+            background: #f0f7ff;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload-text {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .file-upload-text strong {
+            color: var(--gray-900);
+        }
+
+        .mod-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .mod-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .mod-checkbox input {
+            cursor: pointer;
+        }
+
+        .mod-category-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+
+        .mod-category-label:first-of-type {
+            margin-top: 0;
+        }
+
+        .batch-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+        }
+
+        .batch-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            cursor: pointer;
+        }
+
+        .batch-actions button:hover {
+            background: var(--gray-300);
+        }
+
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-container.visible {
+            display: block;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--gray-100);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--blue);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 8px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .findings-grid, .task-grid {
@@ -573,6 +756,14 @@
 
             .demo-select, .demo-api-key {
                 width: 100%;
+            }
+
+            .batch-row {
+                grid-template-columns: 1fr;
+            }
+
+            .mod-checkboxes {
+                grid-template-columns: repeat(2, 1fr);
             }
 
             header { padding: 60px 0 40px; }
@@ -750,66 +941,173 @@
         <div class="container">
             <div class="section-title">Try It</div>
             <h2>Flukify Your Text</h2>
-            <p>Enter any text and apply FLUKE modifications using your OpenAI API key. Your key is used directly in-browser and never stored.</p>
+            <p>Apply FLUKE modifications using your OpenAI API key. Your key is used directly in-browser and never stored.</p>
 
-            <div class="demo-container">
-                <div class="demo-input">
-                    <label class="demo-label">Input Text</label>
-                    <textarea class="demo-textarea" id="demo-input" placeholder="Enter text to modify...">The quick brown fox jumps over the lazy dog.</textarea>
-                </div>
-                <div class="demo-output">
-                    <label class="demo-label">Modified Text</label>
-                    <textarea class="demo-textarea output" id="demo-output" readonly placeholder="Modified text will appear here..."></textarea>
-                    <div class="demo-meta" id="demo-meta">
-                        <div class="demo-meta-item"><span class="demo-meta-label">Type:</span> <span id="meta-type"></span></div>
-                        <div class="demo-meta-item"><span class="demo-meta-label">Rationale:</span> <span id="meta-rationale"></span></div>
+            <div class="demo-tabs">
+                <button class="demo-tab active" data-panel="single-panel">Single Text</button>
+                <button class="demo-tab" data-panel="batch-panel">Batch Dataset</button>
+            </div>
+
+            <!-- Single Text Panel -->
+            <div class="demo-panel active" id="single-panel">
+                <div class="demo-container">
+                    <div class="demo-input">
+                        <label class="demo-label">Input Text</label>
+                        <textarea class="demo-textarea" id="demo-input" placeholder="Enter text to modify...">The quick brown fox jumps over the lazy dog.</textarea>
+                    </div>
+                    <div class="demo-output">
+                        <label class="demo-label">Modified Text</label>
+                        <textarea class="demo-textarea output" id="demo-output" readonly placeholder="Modified text will appear here..."></textarea>
+                        <div class="demo-meta" id="demo-meta">
+                            <div class="demo-meta-item"><span class="demo-meta-label">Type:</span> <span id="meta-type"></span></div>
+                            <div class="demo-meta-item"><span class="demo-meta-label">Rationale:</span> <span id="meta-rationale"></span></div>
+                        </div>
                     </div>
                 </div>
+
+                <div class="demo-controls">
+                    <select class="demo-select" id="demo-mod">
+                        <optgroup label="Orthography">
+                            <option value="capitalization">Capitalization</option>
+                            <option value="punctuation">Punctuation</option>
+                            <option value="typo">Spelling (Typo)</option>
+                        </optgroup>
+                        <optgroup label="Morphology">
+                            <option value="derivation">Derivation</option>
+                            <option value="compound">Compound Words</option>
+                        </optgroup>
+                        <optgroup label="Syntax">
+                            <option value="active_to_passive">Active to Passive</option>
+                            <option value="grammatical_role">Grammatical Role</option>
+                            <option value="coordinating_conjunction">Coordinating Conjunction</option>
+                        </optgroup>
+                        <optgroup label="Semantics">
+                            <option value="concept_replacement">Concept Replacement</option>
+                            <option value="negation" selected>Negation</option>
+                        </optgroup>
+                        <optgroup label="Discourse">
+                            <option value="discourse_markers">Discourse Markers</option>
+                            <option value="sentiment">Sentiment</option>
+                        </optgroup>
+                        <optgroup label="Varieties">
+                            <option value="dialectal">Dialectal</option>
+                            <option value="casual">Casual/Formal</option>
+                        </optgroup>
+                        <optgroup label="Biases">
+                            <option value="temporal_bias">Temporal Bias</option>
+                            <option value="geographical_bias">Geographical Bias</option>
+                            <option value="length_bias">Length Bias</option>
+                        </optgroup>
+                    </select>
+                    <input type="password" class="demo-api-key" id="demo-api-key" placeholder="OpenAI API Key (sk-...)">
+                    <button class="demo-btn" id="demo-btn" onclick="runFlukify()">Apply Modification</button>
+                </div>
+
+                <div class="demo-status" id="demo-status"></div>
             </div>
 
-            <div class="demo-controls">
-                <select class="demo-select" id="demo-mod">
-                    <optgroup label="Orthography">
-                        <option value="capitalization">Capitalization</option>
-                        <option value="punctuation">Punctuation</option>
-                        <option value="typo">Spelling (Typo)</option>
-                    </optgroup>
-                    <optgroup label="Morphology">
-                        <option value="derivation">Derivation</option>
-                        <option value="compound">Compound Words</option>
-                    </optgroup>
-                    <optgroup label="Syntax">
-                        <option value="active_to_passive">Active to Passive</option>
-                        <option value="grammatical_role">Grammatical Role</option>
-                        <option value="coordinating_conjunction">Coordinating Conjunction</option>
-                    </optgroup>
-                    <optgroup label="Semantics">
-                        <option value="concept_replacement">Concept Replacement</option>
-                        <option value="negation" selected>Negation</option>
-                    </optgroup>
-                    <optgroup label="Discourse">
-                        <option value="discourse_markers">Discourse Markers</option>
-                        <option value="sentiment">Sentiment</option>
-                    </optgroup>
-                    <optgroup label="Varieties">
-                        <option value="dialectal">Dialectal</option>
-                        <option value="casual">Casual/Formal</option>
-                    </optgroup>
-                    <optgroup label="Biases">
-                        <option value="temporal_bias">Temporal Bias</option>
-                        <option value="geographical_bias">Geographical Bias</option>
-                        <option value="length_bias">Length Bias</option>
-                    </optgroup>
-                </select>
-                <input type="password" class="demo-api-key" id="demo-api-key" placeholder="OpenAI API Key (sk-...)">
-                <button class="demo-btn" id="demo-btn" onclick="runFlukify()">Apply Modification</button>
-            </div>
+            <!-- Batch Dataset Panel -->
+            <div class="demo-panel" id="batch-panel">
+                <div class="file-upload" id="file-upload" onclick="document.getElementById('file-input').click()">
+                    <input type="file" id="file-input" accept=".csv,.jsonl,.json" onchange="handleFileSelect(this)">
+                    <div class="file-upload-text" id="file-upload-text">
+                        <strong>Click to upload</strong> or drag and drop<br>
+                        CSV or JSONL file
+                    </div>
+                </div>
 
-            <div class="demo-status" id="demo-status"></div>
+                <div class="batch-row">
+                    <div class="batch-field">
+                        <label for="batch-text-field">Text Column Name</label>
+                        <input type="text" id="batch-text-field" value="text" placeholder="text">
+                    </div>
+                    <div class="batch-field">
+                        <label for="batch-sample">Sample Size (optional)</label>
+                        <input type="number" id="batch-sample" min="1" placeholder="All rows">
+                    </div>
+                </div>
+
+                <div class="batch-row">
+                    <div class="batch-field">
+                        <label for="batch-api-key">OpenAI API Key</label>
+                        <input type="password" id="batch-api-key" placeholder="sk-...">
+                    </div>
+                    <div class="batch-field">
+                        <label for="batch-model">Model</label>
+                        <select id="batch-model">
+                            <option value="gpt-4o-mini" selected>gpt-4o-mini (fast, cheap)</option>
+                            <option value="gpt-4o">gpt-4o (better quality)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label class="demo-label" style="margin-top: 20px;">Select Modifications</label>
+
+                <div class="mod-category-label">Orthography</div>
+                <div class="mod-checkboxes">
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="capitalization" checked> Capitalization</label>
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="punctuation" checked> Punctuation</label>
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="typo" checked> Spelling (Typo)</label>
+                </div>
+
+                <div class="mod-category-label">Morphology</div>
+                <div class="mod-checkboxes">
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="derivation" checked> Derivation</label>
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="compound" checked> Compound Words</label>
+                </div>
+
+                <div class="mod-category-label">Syntax</div>
+                <div class="mod-checkboxes">
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="active_to_passive" checked> Active to Passive</label>
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="grammatical_role" checked> Grammatical Role</label>
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="coordinating_conjunction" checked> Coordinating Conjunction</label>
+                </div>
+
+                <div class="mod-category-label">Semantics</div>
+                <div class="mod-checkboxes">
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="concept_replacement" checked> Concept Replacement</label>
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="negation" checked> Negation</label>
+                </div>
+
+                <div class="mod-category-label">Discourse</div>
+                <div class="mod-checkboxes">
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="discourse_markers" checked> Discourse Markers</label>
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="sentiment" checked> Sentiment</label>
+                </div>
+
+                <div class="mod-category-label">Varieties</div>
+                <div class="mod-checkboxes">
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="dialectal" checked> Dialectal</label>
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="casual" checked> Casual/Formal</label>
+                </div>
+
+                <div class="mod-category-label">Biases</div>
+                <div class="mod-checkboxes">
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="temporal_bias" checked> Temporal Bias</label>
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="geographical_bias" checked> Geographical Bias</label>
+                    <label class="mod-checkbox"><input type="checkbox" name="batch-mod" value="length_bias" checked> Length Bias</label>
+                </div>
+
+                <div class="batch-actions">
+                    <button onclick="selectAllMods()">Select All</button>
+                    <button onclick="selectNoneMods()">Select None</button>
+                </div>
+
+                <button class="demo-btn" id="batch-btn" onclick="runBatchFlukify()" style="width: 100%;">Process Dataset</button>
+
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">Processing...</div>
+                </div>
+
+                <div class="demo-status" id="batch-status"></div>
+            </div>
 
             <div class="demo-note">
-                <strong>Note:</strong> This demo calls the OpenAI API directly from your browser using your API key.
-                For batch processing or programmatic use, see the <a href="https://github.com/joey234/fluke/tree/main/flukify" style="color: var(--blue);">Flukify CLI tool</a>.
+                <strong>Note:</strong> API calls are made directly from your browser. Your API key is never stored or sent anywhere except OpenAI.
+                For programmatic use, see the <a href="https://github.com/joey234/fluke/tree/main/flukify" style="color: var(--blue);">Flukify CLI tool</a>.
             </div>
         </div>
     </section>
@@ -1452,6 +1750,310 @@ Always return valid JSON with the structure:
         document.getElementById('demo-api-key').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 runFlukify();
+            }
+        });
+
+        // Demo tab switching
+        document.querySelectorAll('.demo-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.demo-panel').forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.panel).classList.add('active');
+            });
+        });
+
+        // File upload handling
+        let uploadedData = null;
+        let uploadedFileName = '';
+
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            uploadedFileName = file.name;
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const content = e.target.result;
+                try {
+                    if (file.name.endsWith('.csv')) {
+                        uploadedData = parseCSV(content);
+                    } else if (file.name.endsWith('.jsonl')) {
+                        uploadedData = parseJSONL(content);
+                    } else if (file.name.endsWith('.json')) {
+                        uploadedData = JSON.parse(content);
+                    }
+
+                    document.getElementById('file-upload').classList.add('has-file');
+                    document.getElementById('file-upload-text').innerHTML =
+                        `<strong>${file.name}</strong><br>${uploadedData.length} rows loaded`;
+
+                    // Try to auto-detect text field
+                    if (uploadedData.length > 0) {
+                        const cols = Object.keys(uploadedData[0]);
+                        const textCols = ['text', 'sentence', 'content', 'input', 'question'];
+                        for (const tc of textCols) {
+                            if (cols.includes(tc)) {
+                                document.getElementById('batch-text-field').value = tc;
+                                break;
+                            }
+                        }
+                    }
+                } catch (err) {
+                    alert('Error parsing file: ' + err.message);
+                    uploadedData = null;
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        function parseCSV(content) {
+            const lines = content.trim().split('\n');
+            if (lines.length < 2) return [];
+
+            // Parse header
+            const headers = parseCSVLine(lines[0]);
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                const values = parseCSVLine(lines[i]);
+                const row = {};
+                headers.forEach((h, idx) => {
+                    row[h] = values[idx] || '';
+                });
+                data.push(row);
+            }
+
+            return data;
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    if (inQuotes && line[i + 1] === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current);
+            return result;
+        }
+
+        function parseJSONL(content) {
+            return content.trim().split('\n')
+                .filter(line => line.trim())
+                .map(line => JSON.parse(line));
+        }
+
+        function selectAllMods() {
+            document.querySelectorAll('input[name="batch-mod"]').forEach(cb => cb.checked = true);
+        }
+
+        function selectNoneMods() {
+            document.querySelectorAll('input[name="batch-mod"]').forEach(cb => cb.checked = false);
+        }
+
+        // Batch processing
+        let batchAborted = false;
+
+        async function runBatchFlukify() {
+            if (!uploadedData || uploadedData.length === 0) {
+                showBatchStatus('Please upload a file first.', 'error');
+                return;
+            }
+
+            const textField = document.getElementById('batch-text-field').value.trim();
+            const sampleSize = parseInt(document.getElementById('batch-sample').value) || uploadedData.length;
+            const apiKey = document.getElementById('batch-api-key').value.trim();
+            const model = document.getElementById('batch-model').value;
+
+            if (!apiKey) {
+                showBatchStatus('Please enter your OpenAI API key.', 'error');
+                return;
+            }
+
+            // Check text field exists
+            if (uploadedData.length > 0 && !(textField in uploadedData[0])) {
+                const cols = Object.keys(uploadedData[0]).join(', ');
+                showBatchStatus(`Column "${textField}" not found. Available: ${cols}`, 'error');
+                return;
+            }
+
+            // Get selected modifications
+            const selectedMods = Array.from(document.querySelectorAll('input[name="batch-mod"]:checked'))
+                .map(cb => cb.value);
+
+            if (selectedMods.length === 0) {
+                showBatchStatus('Please select at least one modification.', 'error');
+                return;
+            }
+
+            // Sample data
+            let data = uploadedData.slice(0, sampleSize);
+
+            // Calculate total operations
+            const totalOps = data.length * selectedMods.length;
+            let completedOps = 0;
+
+            // Show progress
+            const progressContainer = document.getElementById('progress-container');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            const btn = document.getElementById('batch-btn');
+
+            progressContainer.classList.add('visible');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+            batchAborted = false;
+
+            const results = [];
+
+            try {
+                for (const mod of selectedMods) {
+                    if (batchAborted) break;
+
+                    for (let i = 0; i < data.length; i++) {
+                        if (batchAborted) break;
+
+                        const row = data[i];
+                        const text = String(row[textField] || '');
+
+                        // Update progress
+                        completedOps++;
+                        const pct = Math.round((completedOps / totalOps) * 100);
+                        progressFill.style.width = pct + '%';
+                        progressText.textContent = `Processing ${mod} (${completedOps}/${totalOps})...`;
+
+                        // Make API call
+                        try {
+                            const result = await callOpenAI(text, mod, apiKey, model);
+                            results.push({
+                                ...row,
+                                modification_type: mod,
+                                modified_text: result.modified || text,
+                                modification_subtype: result.type || '',
+                                modification_rationale: result.rationale || ''
+                            });
+                        } catch (err) {
+                            results.push({
+                                ...row,
+                                modification_type: mod,
+                                modified_text: text,
+                                modification_subtype: 'error',
+                                modification_rationale: err.message
+                            });
+                        }
+
+                        // Small delay to avoid rate limiting
+                        await new Promise(r => setTimeout(r, 100));
+                    }
+                }
+
+                // Generate and download CSV
+                if (results.length > 0) {
+                    downloadCSV(results, uploadedFileName.replace(/\.[^.]+$/, '') + '_flukified.csv');
+                    showBatchStatus(`Complete! Downloaded ${results.length} modified samples.`, 'success');
+                }
+
+            } catch (err) {
+                showBatchStatus('Error: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Process Dataset';
+                progressFill.style.width = '100%';
+            }
+        }
+
+        async function callOpenAI(text, modification, apiKey, model) {
+            const prompt = MODIFICATION_PROMPTS[modification].replace('{text}', text);
+
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [
+                        { role: 'system', content: SYSTEM_PROMPT },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.3,
+                    response_format: { type: 'json_object' }
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'API request failed');
+            }
+
+            const data = await response.json();
+            return JSON.parse(data.choices[0].message.content);
+        }
+
+        function downloadCSV(data, filename) {
+            if (data.length === 0) return;
+
+            const headers = Object.keys(data[0]);
+            const csvContent = [
+                headers.map(h => `"${h}"`).join(','),
+                ...data.map(row =>
+                    headers.map(h => {
+                        const val = String(row[h] || '').replace(/"/g, '""');
+                        return `"${val}"`;
+                    }).join(',')
+                )
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function showBatchStatus(message, type) {
+            const el = document.getElementById('batch-status');
+            el.textContent = message;
+            el.className = 'demo-status ' + (type || '');
+        }
+
+        // Drag and drop support
+        const fileUpload = document.getElementById('file-upload');
+        fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUpload.style.borderColor = 'var(--gray-900)';
+        });
+        fileUpload.addEventListener('dragleave', () => {
+            fileUpload.style.borderColor = '';
+        });
+        fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUpload.style.borderColor = '';
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                document.getElementById('file-input').files = e.dataTransfer.files;
+                handleFileSelect(document.getElementById('file-input'));
             }
         });
     </script>
