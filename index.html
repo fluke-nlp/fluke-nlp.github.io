@@ -410,10 +410,169 @@
             color: var(--gray-700);
         }
 
+        /* Demo Section */
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .demo-input, .demo-output {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .demo-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+        }
+
+        .demo-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            resize: vertical;
+        }
+
+        .demo-textarea:focus {
+            outline: none;
+            border-color: var(--gray-900);
+        }
+
+        .demo-textarea.output {
+            background: var(--gray-100);
+            color: var(--gray-900);
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .demo-select {
+            padding: 10px 16px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 14px;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        .demo-select:focus {
+            outline: none;
+            border-color: var(--gray-900);
+        }
+
+        .demo-btn {
+            padding: 10px 24px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            background: var(--gray-900);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .demo-btn:hover {
+            background: var(--black);
+        }
+
+        .demo-btn:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+        }
+
+        .demo-api-key {
+            padding: 10px 16px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            width: 280px;
+        }
+
+        .demo-api-key::placeholder {
+            color: var(--gray-500);
+        }
+
+        .demo-status {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 12px;
+        }
+
+        .demo-status.error {
+            color: var(--accent);
+        }
+
+        .demo-status.success {
+            color: #065f46;
+        }
+
+        .demo-meta {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--gray-100);
+            font-size: 12px;
+            display: none;
+        }
+
+        .demo-meta.visible {
+            display: block;
+        }
+
+        .demo-meta-item {
+            margin-bottom: 4px;
+        }
+
+        .demo-meta-label {
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .demo-note {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 16px;
+            padding: 12px;
+            background: var(--gray-100);
+            border-left: 3px solid var(--gray-300);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .findings-grid, .task-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+
+            .demo-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .demo-select, .demo-api-key {
+                width: 100%;
             }
 
             header { padding: 60px 0 40px; }
@@ -583,6 +742,74 @@
                     <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">He went on to produce Kim Fowley and the BMX Bandits</div>
                     <div style="font-size: 13px; color: var(--gray-900);">He produced Kim Fowley and BMX Bandits</div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="try-it">
+        <div class="container">
+            <div class="section-title">Try It</div>
+            <h2>Flukify Your Text</h2>
+            <p>Enter any text and apply FLUKE modifications using your OpenAI API key. Your key is used directly in-browser and never stored.</p>
+
+            <div class="demo-container">
+                <div class="demo-input">
+                    <label class="demo-label">Input Text</label>
+                    <textarea class="demo-textarea" id="demo-input" placeholder="Enter text to modify...">The quick brown fox jumps over the lazy dog.</textarea>
+                </div>
+                <div class="demo-output">
+                    <label class="demo-label">Modified Text</label>
+                    <textarea class="demo-textarea output" id="demo-output" readonly placeholder="Modified text will appear here..."></textarea>
+                    <div class="demo-meta" id="demo-meta">
+                        <div class="demo-meta-item"><span class="demo-meta-label">Type:</span> <span id="meta-type"></span></div>
+                        <div class="demo-meta-item"><span class="demo-meta-label">Rationale:</span> <span id="meta-rationale"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-controls">
+                <select class="demo-select" id="demo-mod">
+                    <optgroup label="Orthography">
+                        <option value="capitalization">Capitalization</option>
+                        <option value="punctuation">Punctuation</option>
+                        <option value="typo">Spelling (Typo)</option>
+                    </optgroup>
+                    <optgroup label="Morphology">
+                        <option value="derivation">Derivation</option>
+                        <option value="compound">Compound Words</option>
+                    </optgroup>
+                    <optgroup label="Syntax">
+                        <option value="active_to_passive">Active to Passive</option>
+                        <option value="grammatical_role">Grammatical Role</option>
+                        <option value="coordinating_conjunction">Coordinating Conjunction</option>
+                    </optgroup>
+                    <optgroup label="Semantics">
+                        <option value="concept_replacement">Concept Replacement</option>
+                        <option value="negation" selected>Negation</option>
+                    </optgroup>
+                    <optgroup label="Discourse">
+                        <option value="discourse_markers">Discourse Markers</option>
+                        <option value="sentiment">Sentiment</option>
+                    </optgroup>
+                    <optgroup label="Varieties">
+                        <option value="dialectal">Dialectal</option>
+                        <option value="casual">Casual/Formal</option>
+                    </optgroup>
+                    <optgroup label="Biases">
+                        <option value="temporal_bias">Temporal Bias</option>
+                        <option value="geographical_bias">Geographical Bias</option>
+                        <option value="length_bias">Length Bias</option>
+                    </optgroup>
+                </select>
+                <input type="password" class="demo-api-key" id="demo-api-key" placeholder="OpenAI API Key (sk-...)">
+                <button class="demo-btn" id="demo-btn" onclick="runFlukify()">Apply Modification</button>
+            </div>
+
+            <div class="demo-status" id="demo-status"></div>
+
+            <div class="demo-note">
+                <strong>Note:</strong> This demo calls the OpenAI API directly from your browser using your API key.
+                For batch processing or programmatic use, see the <a href="https://github.com/joey234/fluke/tree/main/flukify" style="color: var(--blue);">Flukify CLI tool</a>.
             </div>
         </div>
     </section>
@@ -962,6 +1189,270 @@
                 document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
                 document.getElementById(targetId).classList.add('active');
             });
+        });
+    </script>
+
+    <!-- Flukify Demo Script -->
+    <script>
+        const MODIFICATION_PROMPTS = {
+            capitalization: `Modify the capitalization of the text in one of these ways:
+- lowercase: convert to all lowercase
+- UPPERCASE: convert to all uppercase
+- Title Case: capitalize first letter of each word
+- rAnDoM: randomize capitalization (spongebob style)
+- selective: capitalize random non-proper-noun words
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            punctuation: `Modify the punctuation of the text in one of these ways:
+- removal: remove some punctuation marks
+- addition: add extra punctuation (commas, periods)
+- substitution: replace punctuation with similar marks
+- glueing: remove spaces around punctuation
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            typo: `Introduce a realistic typo in the text using one of these methods:
+- addition: add an extra character (e.g., "compellling")
+- omission: remove a character (e.g., "writen")
+- substitution: swap a character for nearby key (e.g., "teh" for "the")
+- transposition: swap adjacent characters (e.g., "hte" for "the")
+
+Make only 1-2 small typos that a human might naturally make.
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            derivation: `Replace a word with a morphologically related form:
+- Change verb forms (created → born, developed → made)
+- Change noun forms (town → municipality, company → firm)
+- Use derived forms (happy → happiness → happily)
+
+The meaning should remain similar.
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            compound: `Modify compound words or add compound modifiers:
+- Split compounds: "website" → "web site"
+- Join words: "ice cream" → "ice-cream"
+- Add compound modifiers: "community" → "gated community"
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            active_to_passive: `Convert active voice to passive voice or vice versa:
+- Active: "The cat caught the mouse" → Passive: "The mouse was caught by the cat"
+- Maintain the same meaning and entities
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            grammatical_role: `Swap grammatical roles while trying to maintain grammaticality:
+- Swap subject and object positions
+- Change the syntactic structure while preserving words
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            coordinating_conjunction: `Add or modify coordinating conjunctions:
+- Add "and", "but", "or" to connect clauses
+- Expand with additional coordinated elements
+- Example: "making headlines" → "escalating and making headlines"
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            concept_replacement: `Replace a concept with a semantically related word:
+- Synonym: "big" → "large"
+- Hypernym: "dog" → "animal"
+- Hyponym: "vehicle" → "car"
+- Related concept: "angst" → "distress"
+
+The overall meaning should remain similar.
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            negation: `Introduce negation into the text using one of these types:
+- verbal: "He trusts them" → "He does not trust them"
+- absolute: "He trusts everyone" → "He trusts no one"
+- approximate: "He always helps" → "He rarely helps"
+- affixal: "healthy" → "unhealthy"
+- lexical: "big" → "small"
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            discourse_markers: `Modify discourse markers/connectives:
+- Add: "Santa is innocent" → "Moreover, Santa is innocent"
+- Remove: "However, he left" → "He left"
+- Replace: "Therefore" → "Thus"
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            sentiment: `Add sentiment/appraisal markers without changing core meaning:
+- Add adverbs: "recruited" → "reluctantly recruited"
+- Add adjectives: "established" → "barely established"
+- Add emotional tone while preserving factual content
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            dialectal: `Transform to a dialect variation:
+- Singlish: "That's delicious!" → "Shiok lah!"
+- AAVE: Standard → African American Vernacular English features
+- British/American: "apartment" ↔ "flat"
+
+Maintain meaning while changing dialect markers.
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            casual: `Transform between formal and casual register:
+- Formal → Casual: "1945 film" → "'45 flick"
+- Use contractions, slang, informal vocabulary
+- Or reverse: make casual text more formal
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            temporal_bias: `Apply temporal/archaic variations:
+- Modern → Old-fashioned: "villainess" → "villainness"
+- Update dated terms or use archaic alternatives
+- Change time references
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            geographical_bias: `Change geographical/cultural references:
+- Swap nationalities: "American" → "Nauruan"
+- Change location names to equivalent but different places
+- Modify cultural references
+
+Text: {text}
+
+Return JSON with the modified text.`,
+
+            length_bias: `Modify the length of the text:
+- Shorten: Remove redundant words, use contractions
+- Lengthen: Add clarifying phrases, be more verbose
+- Target ~20% length change while preserving meaning
+
+Text: {text}
+
+Return JSON with the modified text.`
+        };
+
+        const SYSTEM_PROMPT = `You are a linguist specializing in text modification. Your task is to make minimal, controlled modifications to text based on specific linguistic aspects. These modifications should preserve the core meaning while introducing linguistic variations that can test model robustness.
+
+Always return valid JSON with the structure:
+{
+    "modified": "the modified text",
+    "type": "specific modification subtype applied",
+    "rationale": "brief explanation of what was changed"
+}`;
+
+        async function runFlukify() {
+            const inputText = document.getElementById('demo-input').value.trim();
+            const modification = document.getElementById('demo-mod').value;
+            const apiKey = document.getElementById('demo-api-key').value.trim();
+            const statusEl = document.getElementById('demo-status');
+            const outputEl = document.getElementById('demo-output');
+            const metaEl = document.getElementById('demo-meta');
+            const btn = document.getElementById('demo-btn');
+
+            // Validation
+            if (!inputText) {
+                statusEl.textContent = 'Please enter some text to modify.';
+                statusEl.className = 'demo-status error';
+                return;
+            }
+
+            if (!apiKey) {
+                statusEl.textContent = 'Please enter your OpenAI API key.';
+                statusEl.className = 'demo-status error';
+                return;
+            }
+
+            // Update UI
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+            statusEl.textContent = 'Calling OpenAI API...';
+            statusEl.className = 'demo-status';
+            outputEl.value = '';
+            metaEl.classList.remove('visible');
+
+            try {
+                const prompt = MODIFICATION_PROMPTS[modification].replace('{text}', inputText);
+
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [
+                            { role: 'system', content: SYSTEM_PROMPT },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.3,
+                        response_format: { type: 'json_object' }
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error?.message || 'API request failed');
+                }
+
+                const data = await response.json();
+                const content = data.choices[0].message.content;
+                const result = JSON.parse(content);
+
+                // Display results
+                outputEl.value = result.modified || inputText;
+                document.getElementById('meta-type').textContent = result.type || 'N/A';
+                document.getElementById('meta-rationale').textContent = result.rationale || 'N/A';
+                metaEl.classList.add('visible');
+
+                statusEl.textContent = 'Modification applied successfully!';
+                statusEl.className = 'demo-status success';
+
+            } catch (error) {
+                statusEl.textContent = 'Error: ' + error.message;
+                statusEl.className = 'demo-status error';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Apply Modification';
+            }
+        }
+
+        // Allow Enter key in API key field to trigger modification
+        document.getElementById('demo-api-key').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                runFlukify();
+            }
         });
     </script>
 </body>
