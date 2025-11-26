@@ -3,730 +3,969 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLUKE: A Task-Agnostic Framework for Linguistic Capability Testing</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>FLUKE: Linguistically-Driven Robustness Evaluation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #111;
+            --gray-900: #1a1a1a;
+            --gray-700: #444;
+            --gray-500: #777;
+            --gray-300: #bbb;
+            --gray-100: #f5f5f5;
+            --white: #fff;
+            --accent: #d63031;
+            --blue: #2d5fd3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            color: var(--gray-900);
+            line-height: 1.6;
+            font-size: 16px;
+            background: var(--white);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Header */
+        header {
+            padding: 80px 0 60px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .venue {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 500;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            max-width: 800px;
+        }
+
+        .acronym {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 24px;
+        }
+
+        .acronym strong {
+            color: var(--gray-900);
+            text-decoration: underline;
+            text-decoration-color: var(--accent);
+            text-underline-offset: 2px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--gray-700);
+            max-width: 680px;
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+
+        .links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-900);
+            transition: all 0.2s;
+        }
+
+        .links a:hover {
+            border-color: var(--gray-900);
+            background: var(--gray-900);
+            color: var(--white);
+        }
+
+        .links a svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Sections */
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gray-500);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        p {
+            color: var(--gray-700);
+            margin-bottom: 16px;
+            max-width: 680px;
+        }
+
+        /* Findings */
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .finding {
+            padding: 24px;
+            background: var(--gray-100);
+        }
+
+        .finding-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .finding h3 {
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .finding p {
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 32px 0;
+            border: 1px solid var(--gray-100);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: var(--gray-900);
+            color: var(--white);
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid var(--gray-100);
+            white-space: nowrap;
+        }
+
+        tr:hover td {
+            background: var(--gray-100);
+        }
+
+        .cat-cell {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.02em;
+        }
+
+        .mod-cell {
+            font-weight: 500;
+        }
+
+        .num-cell {
+            text-align: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+        }
+
+        .high { background: #fee2e2; color: #991b1b; font-weight: 600; }
+        .med { background: #fef3c7; color: #92400e; }
+        .low { background: #d1fae5; color: #065f46; }
+
+        .avg-row td {
+            background: var(--gray-100);
+            font-weight: 600;
+        }
+
+        .table-caption {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 12px;
+            font-style: italic;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid var(--gray-100);
+            margin-bottom: 24px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-500);
+            background: none;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--gray-900);
+        }
+
+        .tab.active {
+            color: var(--gray-900);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .task-badge {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .task-badge.cls { background: var(--blue); color: white; }
+        .task-badge.gen { background: var(--accent); color: white; }
+
+        /* Task grid */
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .task {
+            padding: 20px;
+            border: 1px solid var(--gray-100);
+        }
+
+        .task-type {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .task-type.cls { background: var(--blue); color: white; }
+        .task-type.gen { background: var(--accent); color: white; }
+
+        .task h4 {
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .task p {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin: 0;
+        }
+
+        /* Models */
+        .model-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .model {
+            padding: 8px 16px;
+            background: var(--gray-100);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .model.reasoning {
+            background: var(--gray-900);
+            color: var(--white);
+        }
+
+        /* Citation */
+        .citation-box {
+            background: var(--gray-900);
+            color: var(--gray-300);
+            padding: 24px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .citation-box pre {
+            margin: 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: transparent;
+            border: 1px solid var(--gray-500);
+            color: var(--gray-300);
+            padding: 6px 12px;
+            font-size: 11px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--white);
+            color: var(--gray-900);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        footer a {
+            color: var(--gray-700);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .findings-grid, .task-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header { padding: 60px 0 40px; }
+            section { padding: 40px 0; }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#abstract" class="nav-link">Abstract</a>
-            <a href="#framework" class="nav-link">Framework</a>
-            <a href="#results" class="nav-link">Results</a>
-            <a href="#discussion" class="nav-link">Discussion</a>
-            <a href="#resources" class="nav-link">Resources</a>
-        </div>
-    </nav>
-
-    <header class="hero">
+    <header>
         <div class="container">
-            <h1 class="title">FLUKE: A Task-Agnostic Framework for Linguistic Capability Testing</h1>
-            <div class="authors">
-                <span class="author">Yulia Otmakhova</span><sup>1*</sup>,
-                <span class="author">Hung Thinh Truong</span><sup>1*</sup>,
-                <span class="author">Rahmad Mahendra</span><sup>2</sup>,
-                <span class="author">Zenan Zhai</span><sup>3</sup>,
-                <span class="author">Rongxin Zhu</span><sup>1,3</sup>,
-                <span class="author">Daniel Beck</span><sup>2</sup>,
-                <span class="author">Jey Han Lau</span><sup>1</sup>
-            </div>
-            <div class="affiliations">
-                <sup>1</sup>The University of Melbourne, <sup>2</sup>RMIT University, <sup>3</sup>Oracle<br>
-                <span style="font-size: 0.9em; font-style: italic;">*Equal contribution</span>
-            </div>
+            <div class="venue">Preprint</div>
+            <h1>FLUKE: A Linguistically-Driven and Task-Agnostic Framework for Robustness Evaluation</h1>
+            <p class="authors" style="font-size: 15px; color: var(--gray-700); margin-bottom: 8px;">
+                Yulia Otmakhova<sup>1*</sup>, Hung Thinh Truong<sup>1*</sup>, Rahmad Mahendra<sup>2</sup>, Zenan Zhai<sup>3</sup>, Rongxin Zhu<sup>1,3</sup>, Daniel Beck<sup>2</sup>, Jey Han Lau<sup>1</sup>
+            </p>
+            <p class="affiliations" style="font-size: 13px; color: var(--gray-500); margin-bottom: 24px;">
+                <sup>1</sup>The University of Melbourne &nbsp; <sup>2</sup>RMIT University &nbsp; <sup>3</sup>Oracle
+            </p>
+            <p class="acronym">
+                <strong>F</strong>ramework for <strong>L</strong>inguistically-driven and task-agnostic robustness eval<strong>U</strong>ation (<strong>K</strong>now your mod<strong>E</strong>l)
+            </p>
+            <p class="subtitle">
+                FLUKE introduces controlled variations across linguistic levels—from orthography to dialect—to systematically evaluate model robustness through minimal modifications of test data.
+            </p>
             <div class="links">
-                <a href="https://arxiv.org/abs/2504.17311" class="btn btn-primary">
-                    <i class="fas fa-file-pdf"></i> Paper
+                <a href="https://arxiv.org/abs/2504.17311">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Paper
                 </a>
-                <a href="https://github.com/joey234/fluke" class="btn btn-secondary">
-                    <i class="fab fa-github"></i> Code
+                <a href="https://github.com/joey234/fluke">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    Code
                 </a>
-                <a href="https://huggingface.co/datasets/joey234/fluke" class="btn btn-secondary">
-                    <i class="fas fa-database"></i> Dataset
+                <a href="https://huggingface.co/datasets/unimelb-nlp/fluke">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                    Dataset
+                </a>
+                <a href="https://fluke-viewer.pages.dev/">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                    Demo
                 </a>
             </div>
         </div>
     </header>
 
-    <main class="main-content">
-        <section id="abstract" class="section">
-            <div class="container">
-                <h2 class="section-title">Abstract</h2>
-                <div class="abstract-content">
-                    <p>
-                        We present FLUKE, a novel task-agnostic framework for comprehensive linguistic capability testing of language models. 
-                        Unlike existing evaluation methods that focus on specific tasks, FLUKE provides a unified approach to assess various 
-                        linguistic capabilities including coreference resolution, named entity recognition, sentiment analysis, and dialogue understanding. 
-                        Our framework generates modified test data that systematically challenges different aspects of language understanding, 
-                        enabling more robust evaluation of both Pre-trained Language Models (PLMs) and Large Language Models (LLMs). 
-                        Through extensive experiments across multiple tasks and models, we demonstrate that FLUKE reveals previously unidentified 
-                        weaknesses in state-of-the-art language models, providing valuable insights for model development and improvement.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section id="framework" class="section">
-            <div class="container">
-                <h2 class="section-title">Framework Overview</h2>
-                <div class="framework-content">
-                    <div class="framework-description">
-                        <h3>Linguistic Modifications</h3>
-                        <p class="framework-intro">FLUKE systematically applies various linguistic modifications to test model robustness across different levels of language structure. Explore the modification types below:</p>
-                        
-                        <!-- Framework Tab Navigation -->
-                        <div class="framework-tab-navigation">
-                            <button class="framework-tab-btn active" data-tab="orthography">Orthography</button>
-                            <button class="framework-tab-btn" data-tab="morphology">Morphology</button>
-                            <button class="framework-tab-btn" data-tab="syntax">Syntax</button>
-                            <button class="framework-tab-btn" data-tab="semantics">Semantics</button>
-                            <button class="framework-tab-btn" data-tab="discourse">Discourse</button>
-                            <button class="framework-tab-btn" data-tab="varieties">Varieties</button>
-                            <button class="framework-tab-btn" data-tab="biases">Biases</button>
-                        </div>
-                        
-                        <!-- Framework Tab Content -->
-                        <div class="framework-tab-content-container">
-                            <!-- Orthography Tab -->
-                            <div class="framework-tab-content active" id="orthography">
-                                <h4>Orthography Modifications</h4>
-                                <p>Testing surface-level textual changes including spelling, capitalization, and punctuation variations.</p>
-                                
-                                <div class="modification-examples">
-                                    <div class="modification-category">
-                                        <h5>Spelling</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Addition:</div>
-                                            <div class="original">beautiful</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">beautiful<strong>l</strong></div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">Omission:</div>
-                                            <div class="original">fantastic</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">fant<strong>[s]</strong>tic</div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">Swapping:</div>
-                                            <div class="original">not a big deal</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">not a big d<strong>ae</strong>l</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modification-category">
-                                        <h5>Capitalization</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Upper to lower:</div>
-                                            <div class="original">Battlefield 3</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>b</strong>attlefield 3</div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">sPoNgEcAsE:</div>
-                                            <div class="original">The professor</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">The <strong>pRoFeSsOr</strong></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modification-category">
-                                        <h5>Punctuation</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Add:</div>
-                                            <div class="original">not exactly the bees knees</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">not exactly<strong>,</strong> the bees knees</div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">Change:</div>
-                                            <div class="original">It's worth tracking down.</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">It's worth tracking down<strong>!</strong></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Morphology Tab -->
-                            <div class="framework-tab-content" id="morphology">
-                                <h4>Morphology Modifications</h4>
-                                <p>Testing word formation and structure through derivation and compounding modifications.</p>
-                                
-                                <div class="modification-examples">
-                                    <div class="modification-category">
-                                        <h5>Derivation</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Derived form:</div>
-                                            <div class="original">killed</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>assassinated</strong></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modification-category">
-                                        <h5>Compound Words</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Compound:</div>
-                                            <div class="original">new</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>brand-new</strong></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Syntax Tab -->
-                            <div class="framework-tab-content" id="syntax">
-                                <h4>Syntax Modifications</h4>
-                                <p>Testing grammatical structure changes including voice, argument roles, and conjunctions.</p>
-                                
-                                <div class="modification-examples">
-                                    <div class="modification-category">
-                                        <h5>Voice</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Active to passive:</div>
-                                            <div class="original">Billy beat Tommy</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>Tommy was beaten by Billy</strong></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modification-category">
-                                        <h5>Grammatical Role</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Entity swap:</div>
-                                            <div class="original">Bob sued Bill</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>Bill sued Bob</strong></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modification-category">
-                                        <h5>Conjunctions</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Coordinating:</div>
-                                            <div class="original">excessive hunting</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">excessive hunting <strong>and poaching</strong></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Semantics Tab -->
-                            <div class="framework-tab-content" id="semantics">
-                                <h4>Semantics Modifications</h4>
-                                <p>Testing meaning-related changes through concept variations and negation modifications.</p>
-                                
-                                <div class="modification-examples">
-                                    <div class="modification-category">
-                                        <h5>Concept</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Synonym:</div>
-                                            <div class="original">suspect</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>doubt</strong></div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">Hyper/hyponym:</div>
-                                            <div class="original">organization</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>association</strong></div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">Nonce word:</div>
-                                            <div class="original">The bowl had a crack</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">The bowl had a <strong>vibble</strong></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modification-category">
-                                        <h5>Negation</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Verbal:</div>
-                                            <div class="original">They were afraid of the robots</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">They were <strong>not</strong> afraid of the robots</div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">Lexical:</div>
-                                            <div class="original">They were afraid of the robots</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">They were <strong>fearless</strong> of the robots</div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">Double:</div>
-                                            <div class="original">They were afraid of the robots</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">They were <strong>not unafraid</strong> of the robots</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Discourse Tab -->
-                            <div class="framework-tab-content" id="discourse">
-                                <h4>Discourse Modifications</h4>
-                                <p>Testing discourse-level phenomena including discourse markers and appraisal modifications.</p>
-                                
-                                <div class="modification-examples">
-                                    <div class="modification-category">
-                                        <h5>Discourse Markers</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Addition:</div>
-                                            <div class="original">Toyota has Lexus: they are built for the rich.</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">Toyota has Lexus, <strong>and</strong> they are built for the rich.</div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">Change:</div>
-                                            <div class="original">The boss fired the worker when he stopped performing well.</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">The boss fired the worker <strong>after</strong> he stopped performing well.</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modification-category">
-                                        <h5>Appraisal</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Addition:</div>
-                                            <div class="original">She turns her down.</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">She <strong>coldly</strong> turns her down.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Varieties Tab -->
-                            <div class="framework-tab-content" id="varieties">
-                                <h4>Language Varieties</h4>
-                                <p>Testing different language styles and dialectal variations.</p>
-                                
-                                <div class="modification-examples">
-                                    <div class="modification-category">
-                                        <h5>Style</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Casual:</div>
-                                            <div class="original">There is no pleasure in watching a child suffer</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>It's no fun seeing a kid suffer</strong></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modification-category">
-                                        <h5>Dialect</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Singlish:</div>
-                                            <div class="original">He would not say no.</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>He dun wan say no.</strong></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Biases Tab -->
-                            <div class="framework-tab-content" id="biases">
-                                <h4>Bias Testing</h4>
-                                <p>Testing for temporal, geographical, and length-related biases in model responses.</p>
-                                
-                                <div class="modification-examples">
-                                    <div class="modification-category">
-                                        <h5>Temporal</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Old-fashioned:</div>
-                                            <div class="original">He treats her badly.</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">He treats her <strong>ill</strong>.</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modification-category">
-                                        <h5>Geographical</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Names:</div>
-                                            <div class="original">Anna tried again</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>Dongxin</strong> tried again</div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">Cultural entities:</div>
-                                            <div class="original">The bat hit the ball</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">The <strong>lakau</strong> hit the <strong>polo</strong></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modification-category">
-                                        <h5>Length</h5>
-                                        <div class="example-row">
-                                            <div class="example-type">Shorten:</div>
-                                            <div class="original">The lion saw the fish and it was swimming</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified"><strong>The lion saw the fish swimming.</strong></div>
-                                        </div>
-                                        <div class="example-row">
-                                            <div class="example-type">Lengthen:</div>
-                                            <div class="original">Joseph did not defeat William</div>
-                                            <div class="arrow">→</div>
-                                            <div class="modified">Joseph did not <strong>manage to</strong> defeat William</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="results" class="section">
-            <div class="container">
-                <h2 class="section-title">Experimental Results</h2>
-                
-                <div class="results-content">
-                    <!-- Tab Navigation -->
-                    <div class="tab-navigation">
-                        <button class="tab-btn active" data-tab="coreference">Coreference</button>
-                        <button class="tab-btn" data-tab="ner">Named Entity Recognition</button>
-                        <button class="tab-btn" data-tab="sentiment">Sentiment Analysis</button>
-                        <button class="tab-btn" data-tab="dialogue">Dialogue Understanding</button>
-                        <button class="tab-btn" data-tab="overview">Overview</button>
-                        <button class="tab-btn" data-tab="negation">Negation Analysis</button>
-                    </div>
-                    
-                    <!-- Tab Content -->
-                    <div class="tab-content-container">
-                        <!-- Coreference Tab -->
-                        <div class="tab-content active" id="coreference">
-                            <div class="tab-header">
-                                <h3>Coreference Resolution Results</h3>
-                                <p>Detailed analysis of model performance on coreference resolution tasks with various linguistic modifications.</p>
-                            </div>
-                            
-                            <div class="results-image">
-                                <img src="fluke_coref.png" alt="Coreference Resolution Results" />
-                            </div>
-                            
-                            <div class="task-insights">
-                                <h4>Key Insights</h4>
-                                <ul>
-                                    <li><strong>Surprising LLM Performance:</strong> LLMs do not outperform PLMs on coreference resolution, showing unexpected drops in performance</li>
-                                    <li><strong>Dialect Sensitivity:</strong> Claude and Llama struggle with dialectal variations, failing to understand phrases like "keng siam" (sneak past)</li>
-                                    <li><strong>Negation Challenges:</strong> GPT-4o and Llama show performance drops on negation tests</li>
-                                    <li><strong>Superficial Cue Reliance:</strong> Llama relies on capitalization cues rather than semantic understanding for antecedent determination</li>
-                                    <li><strong>Style Brittleness:</strong> BERT is sensitive to style changes, while GPT2 makes errors after appraisal word additions</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <!-- NER Tab -->
-                        <div class="tab-content" id="ner">
-                            <div class="tab-header">
-                                <h3>Named Entity Recognition Results</h3>
-                                <p>Comprehensive evaluation of NER capabilities across different entity types and contextual modifications.</p>
-                            </div>
-                            
-                            <div class="results-image">
-                                <img src="fluke_ner.png" alt="Named Entity Recognition Results" />
-                            </div>
-                            
-                            <div class="task-insights">
-                                <h4>Key Insights</h4>
-                                <ul>
-                                    <li><strong>Orthography Vulnerability:</strong> Most significant performance drops occur due to orthography modifications, especially capitalization changes</li>
-                                    <li><strong>Superficial Cue Dependence:</strong> Models heavily rely on capital letters rather than contextual understanding for entity recognition</li>
-                                    <li><strong>Punctuation Brittleness:</strong> Models fail to identify entities when spaces are removed (e.g., "DivineStyler" vs "Divine Styler")</li>
-                                    <li><strong>Temporal and Style Bias:</strong> BERT, Claude, and GPT-4o show temporal bias, while T5 is affected by style changes</li>
-                                    <li><strong>Dialect Misinterpretation:</strong> Both PLMs and LLMs misinterpret dialectal words as named entities (e.g., "lah" as ORGANIZATION)</li>
-                                    <li><strong>Surprising Negation Robustness:</strong> Unlike other tasks, negation modifications do not significantly impact NER performance</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <!-- Sentiment Tab -->
-                        <div class="tab-content" id="sentiment">
-                            <div class="tab-header">
-                                <h3>Sentiment Analysis Results</h3>
-                                <p>Analysis of sentiment classification performance under various linguistic modifications and context changes.</p>
-                            </div>
-                            
-                            <div class="results-image">
-                                <img src="fluke_sentiment.png" alt="Sentiment Analysis Results" />
-                            </div>
-                            
-                            <div class="task-insights">
-                                <h4>Key Insights</h4>
-                                <ul>
-                                    <li><strong>PLM vs LLM Robustness:</strong> PLMs are less robust to modifications compared to LLMs, especially on bias tests and superficial changes</li>
-                                    <li><strong>Spelling Resilience:</strong> All LLMs show negligible drops or even performance gains on spelling modifications</li>
-                                    <li><strong>Voice Change Vulnerability:</strong> LLMs struggle with active-to-passive voice transformations, with GPT-4o particularly confused by passive constructions</li>
-                                    <li><strong>Dialect Misinterpretation:</strong> Claude misinterprets Singlish emphatic particle "only" as having limiting, negative meaning</li>
-                                    <li><strong>Appraisal Marker Sensitivity:</strong> Models struggle when appraisal markers are added to text</li>
-                                    <li><strong>Universal Negation Vulnerability:</strong> All LLMs and PLMs show significant performance drops after negation modifications</li>
-                                    <li><strong>Dialectal Brittleness:</strong> Models are particularly vulnerable to dialect switching modifications</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <!-- Dialogue Tab -->
-                        <div class="tab-content" id="dialogue">
-                            <div class="tab-header">
-                                <h3>Dialogue Understanding Results</h3>
-                                <p>Evaluation of conversational understanding and dialogue state tracking across different conversation types.</p>
-                            </div>
-                            
-                            <div class="results-image">
-                                <img src="fluke_dialogue.png" alt="Dialogue Understanding Results" />
-                            </div>
-                            
-                            <div class="task-insights">
-                                <h4>Key Insights</h4>
-                                <ul>
-                                    <li><strong>LLM vs PLM Performance:</strong> LLMs generally more robust than PLMs, though T5 performs similarly to LLMs</li>
-                                    <li><strong>Geographical Bias:</strong> BERT and GPT2 fail when entities change in final dialogue turns (e.g., Elvis Presley → Googoosh)</li>
-                                    <li><strong>Style Brittleness:</strong> BERT and GPT2 misjudge informal continuations as contradictory</li>
-                                    <li><strong>Grammatical Role Confusion:</strong> Most models struggle to detect inconsistency when grammatical roles change</li>
-                                    <li><strong>Negation Vulnerability:</strong> All models show substantial drops after negation modifications</li>
-                                    <li><strong>Surface-level Processing:</strong> Models rely on token consistency rather than logical coherence</li>
-                                    <li><strong>Discourse Marker Dependence:</strong> BERT improves when discourse relations are explicitly marked</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <!-- Overview Tab -->
-                        <div class="tab-content" id="overview">
-                            <div class="tab-header">
-                                <h3>Performance Overview Across All Tasks</h3>
-                                <p>Comprehensive evaluation results showing model performance and robustness patterns across all linguistic capabilities tested by FLUKE.</p>
-                            </div>
-                            
-                            <div class="results-image">
-                                <img src="fluke_overall.png" alt="Overall FLUKE Results" />
-                            </div>
-                            
-                            <div class="table-container">
-                                <table class="results-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Model</th>
-                                            <th>Coreference</th>
-                                            <th>NER</th>
-                                            <th>Sentiment</th>
-                                            <th>Dialogue</th>
-                                            <th>Average</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>GPT-4</strong></td>
-                                            <td>87.3</td>
-                                            <td>89.1</td>
-                                            <td>85.7</td>
-                                            <td>88.9</td>
-                                            <td><strong>87.8</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>GPT-3.5</strong></td>
-                                            <td>82.1</td>
-                                            <td>84.5</td>
-                                            <td>81.3</td>
-                                            <td>83.7</td>
-                                            <td><strong>82.9</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Claude-2</strong></td>
-                                            <td>85.9</td>
-                                            <td>87.2</td>
-                                            <td>84.1</td>
-                                            <td>86.5</td>
-                                            <td><strong>85.9</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>BERT-Large</strong></td>
-                                            <td>78.4</td>
-                                            <td>82.6</td>
-                                            <td>79.8</td>
-                                            <td>75.3</td>
-                                            <td><strong>79.0</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>RoBERTa-Large</strong></td>
-                                            <td>79.7</td>
-                                            <td>83.9</td>
-                                            <td>81.2</td>
-                                            <td>76.8</td>
-                                            <td><strong>80.4</strong></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="key-findings">
-                                <h3>Major Findings</h3>
-                                <ul>
-                                    <li><strong>LLM vs PLM Robustness:</strong> LLMs generally outperform PLMs, but T5 shows comparable performance to LLMs</li>
-                                    <li><strong>Task-Specific Vulnerabilities:</strong> Models show different weakness patterns across tasks - coreference challenges LLMs, NER relies on superficial cues</li>
-                                    <li><strong>Universal Negation Vulnerability:</strong> All models across all tasks show significant performance drops with negation modifications</li>
-                                    <li><strong>Orthography Dependencies:</strong> Heavy reliance on surface-level features like capitalization, especially in NER tasks</li>
-                                    <li><strong>Dialect and Style Brittleness:</strong> Consistent struggles with dialectal variations and informal language across model types</li>
-                                    <li><strong>Superficial Processing:</strong> Models often rely on token-level consistency rather than deep semantic understanding</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <!-- Negation Analysis Tab -->
-                        <div class="tab-content" id="negation">
-                            <div class="tab-header">
-                                <h3>Negation Modification Analysis</h3>
-                                <p>Comprehensive analysis of how different types of negation modifications affect model performance across all tasks.</p>
-                            </div>
-                            
-                            <div class="results-image">
-                                <img src="fluke_negation.png" alt="Negation Analysis Results" />
-                            </div>
-                            
-                            <div class="task-insights">
-                                <h4>Key Insights</h4>
-                                <ul>
-                                    <li><strong>Universal Vulnerability:</strong> All models (PLMs and LLMs) show substantial performance drops across all tasks when negation is introduced</li>
-                                    <li><strong>Verbal Negation:</strong> Simple "not" insertions cause significant confusion in logical reasoning</li>
-                                    <li><strong>Lexical Negation:</strong> Models struggle with negation embedded in word choice (e.g., "fearless" vs "afraid")</li>
-                                    <li><strong>Double Negation:</strong> Complex negation structures ("not unafraid") particularly challenging for all model types</li>
-                                    <li><strong>Task-Dependent Impact:</strong> Negation effects vary by task - dialogue and sentiment most affected, NER surprisingly resilient</li>
-                                    <li><strong>Absolute vs Approximate:</strong> Models struggle differently with absolute ("none") vs approximate ("seldom") negation markers</li>
-                                    <li><strong>Surface-Level Processing:</strong> Reveals models' reliance on pattern matching rather than logical understanding</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="discussion" class="section">
-            <div class="container">
-                <h2 class="section-title">Discussion</h2>
-                <div class="discussion-content">
-                    <div class="discussion-point">
-                        <h4>1. Model Brittleness is Task-Specific</h4>
-                        <p>FLUKE reveals that model vulnerabilities are highly task-dependent. Tests causing dramatic drops in one task may have minimal impact on others.</p>
-                        <ul>
-                            <li><strong>Negation effects:</strong> Severely affects sentiment analysis and dialogue but barely impacts NER</li>
-                            <li><strong>Orthographic changes:</strong> Significantly hurt NER performance (even for LLMs) but have negligible effects elsewhere</li>
-                            <li><strong>Validation:</strong> This validates FLUKE's task-agnostic approach for revealing meaningful vulnerabilities without preconceived assumptions</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="discussion-point">
-                        <h4>2. LLMs Are Not Always More Robust</h4>
-                        <p>While LLMs generally outperform PLMs in robustness, this pattern is not universal.</p>
-                        <ul>
-                            <li><strong>LLM weaknesses:</strong> Can perform worse on negation and dialect in coreference, or temporal bias in NER</li>
-                            <li><strong>Best performers:</strong> Claude emerges as the most robust LLM, while T5 shows exceptional robustness among PLMs</li>
-                            <li><strong>Universal challenge:</strong> Negation remains the most challenging modification for both model types</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="discussion-point">
-                        <h4>3. Negation Impact Varies by Task</h4>
-                        <p>Negation affects different tasks in distinct ways:</p>
-                        <ul>
-                            <li><strong>Sentiment Analysis:</strong> Models incorrectly predict double negation as negative and ignore polarity-switching adverbs</li>
-                            <li><strong>Dialogue Understanding:</strong> Shows consistent drops as negation changes meaning and affects coherence</li>
-                            <li><strong>Coreference Resolution:</strong> Less impacted, with errors mainly when verbal negation affects commonsense reasoning</li>
-                            <li><strong>NER:</strong> Remains unaffected since entity spans stay constant despite meaning changes</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="discussion-point">
-                        <h4>4. LLM-Generated Tests: Effective but Cautious</h4>
-                        <p>Using LLMs (GPT-4o) for test generation proves viable with important considerations:</p>
-                        <ul>
-                            <li><strong>Success rates:</strong> 70%+ success for most modification types</li>
-                            <li><strong>Challenging areas:</strong> Tests requiring deeper linguistic knowledge (derivation, compounds, grammatical roles) achieve lower rates (50-63%) and need human supervision</li>
-                            <li><strong>Cross-model testing:</strong> Generated tests successfully reveal vulnerabilities in other models</li>
-                            <li><strong>Self-testing caution:</strong> GPT-4o showed anomalous NER improvements, likely making entities more "alien" to contexts</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="resources" class="section">
-            <div class="container">
-                <h2 class="section-title">Resources</h2>
-                <div class="resources-grid">
-                    <div class="resource-card">
-                        <div class="resource-icon">
-                            <i class="fab fa-github"></i>
-                        </div>
-                        <h3>Source Code</h3>
-                        <p>Complete implementation of the FLUKE framework, including data generation scripts and evaluation tools.</p>
-                        <a href="https://github.com/joey234/fluke" class="btn btn-primary">
-                            <i class="fab fa-github"></i> View on GitHub
-                        </a>
-                    </div>
-                    
-                    <div class="resource-card">
-                        <div class="resource-icon">
-                            <i class="fas fa-database"></i>
-                        </div>
-                        <h3>Dataset</h3>
-                        <p>Modified test data across four linguistic tasks: coreference resolution, NER, sentiment analysis, and dialogue understanding.</p>
-                        <a href="https://huggingface.co/datasets/joey234/fluke" class="btn btn-primary">
-                            <i class="fas fa-download"></i> Download Dataset
-                        </a>
-                    </div>
-                    
-                    <div class="resource-card">
-                        <div class="resource-icon">
-                            <i class="fas fa-file-pdf"></i>
-                        </div>
-                        <h3>Paper</h3>
-                        <p>Full research paper with detailed methodology, experiments, and analysis of the FLUKE framework.</p>
-                        <a href="https://arxiv.org/abs/2504.17311" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> Read Paper
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="citation-section">
-            <div class="container">
-                <h2 class="section-title">Citation</h2>
-                <div class="citation-box">
-                    <code>
-@article{otmakhova2025fluke,<br>
-&nbsp;&nbsp;title={FLUKE: A Linguistically-Driven and Task-Agnostic Framework for Robustness Evaluation},<br>
-&nbsp;&nbsp;author={Yulia Otmakhova and Hung Thinh Truong and Rahmad Mahendra and Zenan Zhai and Rongxin Zhu and Daniel Beck and Jey Han Lau},<br>
-&nbsp;&nbsp;year={2025},<br>
-&nbsp;&nbsp;eprint={2504.17311},<br>
-&nbsp;&nbsp;archivePrefix={arXiv},<br>
-&nbsp;&nbsp;primaryClass={cs.CL},<br>
-&nbsp;&nbsp;url={https://arxiv.org/abs/2504.17311}<br>
-}
-                    </code>
-                    <button class="copy-btn" onclick="copyToClipboard()">
-                        <i class="fas fa-copy"></i> Copy
-                    </button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- <footer class="footer">
+    <section id="abstract">
         <div class="container">
-            <p>&copy; 2024 FLUKE Research Team. All rights reserved.</p>
+            <div class="section-title">Abstract</div>
+            <p>
+                We present <strong>FLUKE</strong>, a task-agnostic framework for assessing model robustness through systematic minimal variations of test data. FLUKE introduces controlled variations across linguistic levels—from orthography to dialect and style—and leverages large language models with human validation to generate modifications.
+            </p>
+            <p>
+                We evaluate both fine-tuned models and LLMs across six diverse NLP tasks, revealing that: (1) linguistic variations impact is highly task-dependent; (2) LLMs still exhibit significant brittleness, with reasoning LLMs showing less robustness on some tasks; (3) natural modifications hurt more than corruption-style tests; (4) generation ability doesn't correlate with robustness.
+            </p>
         </div>
-    </footer> -->
+    </section>
 
-    <script src="script.js"></script>
+    <section id="examples">
+        <div class="container">
+            <div class="section-title">Examples</div>
+            <h2>Modification Types</h2>
+            <p>FLUKE applies controlled linguistic modifications that preserve task labels while testing model robustness.</p>
+
+            <div class="examples-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px;">
+                <!-- Orthography -->
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Capitalization</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">The B-52 <u>pilot</u>, Major Messinger</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">The B-52 <u>PILOT</u>, Major Messinger</div>
+                </div>
+
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Punctuation</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);"><u>Fort Wayne</u> Line trains</div>
+                    <div style="font-size: 13px; color: var(--gray-900);"><u>FortWayne</u> Line trains</div>
+                </div>
+
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Spelling (Typo)</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">Grosvenor <u>Square</u> in the 1960s</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">Grosvenor <u>Squar</u> in the 1960s</div>
+                </div>
+
+                <!-- Morphology -->
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Derivation</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">a software company <u>created</u> in 2009</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">a software company <u>born</u> in 2009</div>
+                </div>
+
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Compound Words</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">a <u>gated community</u> called Orchid Island</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">a <u>high-security gated community</u> called Orchid Island</div>
+                </div>
+
+                <!-- Syntax -->
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Active→Passive</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">Back to Basics <u>focuses on</u> genre classics</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">Genre classics <u>are focused on</u> by Back to Basics</div>
+                </div>
+
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Grammatical Role</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">ran for <u>the House</u> from <u>New York</u></div>
+                    <div style="font-size: 13px; color: var(--gray-900);">ran for <u>New York</u> from <u>the House</u></div>
+                </div>
+
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Coord. Conjunction</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">conflicts were <u>making</u> headlines</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">conflicts were <u>escalating and making</u> headlines</div>
+                </div>
+
+                <!-- Semantics -->
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Concept Replacement</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">wallowing in generic <u>angst</u></div>
+                    <div style="font-size: 13px; color: var(--gray-900);">wallowing in generic <u>distress</u></div>
+                </div>
+
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Negation</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">developed by <u>Golaem</u></div>
+                    <div style="font-size: 13px; color: var(--gray-900);">developed by <u>no company, neither Golaem nor any other</u></div>
+                </div>
+
+                <!-- Discourse -->
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Discourse Markers</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);"><u>Moreover,</u> Santa is actually innocent</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">Santa is actually innocent</div>
+                </div>
+
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Sentiment/Appraisal</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">Loyalists <u>recruited</u> from Queens County</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">Loyalists <u>reluctantly recruited</u> from Queens County</div>
+                </div>
+
+                <!-- Varieties -->
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Dialectal</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">that <u>sounds delicious</u> to me!</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">that <u>sounds shiok lah</u>!</div>
+                </div>
+
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Casual Style</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">a <u>1945</u> British comedy-drama <u>film</u></div>
+                    <div style="font-size: 13px; color: var(--gray-900);">a <u>'45</u> British comedy-drama <u>flick</u></div>
+                </div>
+
+                <!-- Biases -->
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Temporal Bias</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">a gold-digging <u>villainness</u></div>
+                    <div style="font-size: 13px; color: var(--gray-900);">a gold-digging <u>villainess</u></div>
+                </div>
+
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Geographical Bias</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">The <u>American</u> fishing community</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">The <u>Nauruan</u> fishing community</div>
+                </div>
+
+                <div class="example-card" style="background: var(--gray-100); padding: 16px;">
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Length Bias</div>
+                    <div style="font-size: 13px; margin-bottom: 6px; color: var(--gray-700);">He went on to produce Kim Fowley and the BMX Bandits</div>
+                    <div style="font-size: 13px; color: var(--gray-900);">He produced Kim Fowley and BMX Bandits</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="findings">
+        <div class="container">
+            <div class="section-title">Key Findings</div>
+            <div class="findings-grid">
+                <div class="finding">
+                    <div class="finding-num">01</div>
+                    <h3>Task-Dependent Impact</h3>
+                    <p>Some tests are critical for certain tasks but irrelevant for others. Negation devastates Dialogue (30%) but barely affects NER (7.4%).</p>
+                </div>
+                <div class="finding">
+                    <div class="finding-num">02</div>
+                    <h3>Reasoning ≠ Robustness</h3>
+                    <p>Reasoning LLMs (GPT-5, DeepSeek R1) sometimes show less robustness than base models on classification tasks.</p>
+                </div>
+                <div class="finding">
+                    <div class="finding-num">03</div>
+                    <h3>Natural > Adversarial</h3>
+                    <p>Fluent modifications (syntax, style, dialect) cause more brittleness than corruption tests like letter flipping.</p>
+                </div>
+                <div class="finding">
+                    <div class="finding-num">04</div>
+                    <h3>Generation ≠ Understanding</h3>
+                    <p>A model's ability to use a linguistic feature in generation doesn't predict its robustness to that feature.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tasks">
+        <div class="container">
+            <div class="section-title">Evaluation Setup</div>
+            <h2>Six Tasks, Eight Models, 17 Tests</h2>
+            <p>We evaluate across classification and generation tasks using PLMs, base LLMs, and reasoning LLMs.</p>
+
+            <div class="task-grid">
+                <div class="task">
+                    <span class="task-type cls">Classification</span>
+                    <h4>Coreference</h4>
+                    <p>KnowRef dataset</p>
+                </div>
+                <div class="task">
+                    <span class="task-type cls">Classification</span>
+                    <h4>Dialogue</h4>
+                    <p>DECODE dataset</p>
+                </div>
+                <div class="task">
+                    <span class="task-type cls">Classification</span>
+                    <h4>NER</h4>
+                    <p>Few-NERD dataset</p>
+                </div>
+                <div class="task">
+                    <span class="task-type cls">Classification</span>
+                    <h4>Sentiment</h4>
+                    <p>SST-2 dataset</p>
+                </div>
+                <div class="task">
+                    <span class="task-type gen">Generation</span>
+                    <h4>Math (GSM)</h4>
+                    <p>GSM8K dataset</p>
+                </div>
+                <div class="task">
+                    <span class="task-type gen">Generation</span>
+                    <h4>Instruction</h4>
+                    <p>IFEval benchmark</p>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 40px;">Models</div>
+            <div class="model-grid">
+                <span class="model">BERT</span>
+                <span class="model">GPT-2</span>
+                <span class="model">T5</span>
+                <span class="model">GPT-4o</span>
+                <span class="model">Claude 3.5</span>
+                <span class="model">Llama 3.1</span>
+                <span class="model reasoning">GPT-5</span>
+                <span class="model reasoning">DeepSeek R1</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="results">
+        <div class="container">
+            <div class="section-title">Results</div>
+            <h2>Unrobustness by Task</h2>
+            <p>Unrobustness (U%) measures prediction changes between original and modified instances. Higher = more brittle. Select a task to view detailed results.</p>
+
+            <div class="tabs" role="tablist">
+                <button class="tab active" data-tab="coref" role="tab">Coreference</button>
+                <button class="tab" data-tab="dialogue" role="tab">Dialogue</button>
+                <button class="tab" data-tab="ner" role="tab">NER</button>
+                <button class="tab" data-tab="sentiment" role="tab">Sentiment</button>
+                <button class="tab" data-tab="gsm" role="tab">GSM</button>
+                <button class="tab" data-tab="ifeval" role="tab">IFEval</button>
+                <button class="tab" data-tab="scaling" role="tab">Scaling</button>
+            </div>
+
+            <!-- Coreference -->
+            <div class="tab-panel active" id="coref" role="tabpanel">
+                <h3>Coreference Resolution <span class="task-badge cls">Classification</span></h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Category</th><th>Modification</th><th>BERT</th><th>GPT-2</th><th>T5</th><th>GPT-4o</th><th>Claude</th><th>Llama</th><th>GPT-5</th><th>DS R1</th><th>Avg</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="cat-cell" rowspan="3">Bias</td><td class="mod-cell">Temporal</td><td class="num-cell">9.0</td><td class="num-cell">4.0</td><td class="num-cell">6.0</td><td class="num-cell">8.0</td><td class="num-cell low">1.0</td><td class="num-cell">7.0</td><td class="num-cell">3.0</td><td class="num-cell">8.0</td><td class="num-cell">5.8</td></tr>
+                            <tr><td class="mod-cell">Geographical</td><td class="num-cell">8.0</td><td class="num-cell med">14.0</td><td class="num-cell">9.0</td><td class="num-cell med">10.0</td><td class="num-cell">4.0</td><td class="num-cell">5.0</td><td class="num-cell">6.0</td><td class="num-cell med">10.0</td><td class="num-cell">8.2</td></tr>
+                            <tr><td class="mod-cell">Length</td><td class="num-cell high">19.2</td><td class="num-cell high">15.2</td><td class="num-cell med">14.1</td><td class="num-cell high">15.2</td><td class="num-cell high">20.2</td><td class="num-cell high">17.2</td><td class="num-cell">8.1</td><td class="num-cell med">13.1</td><td class="num-cell high">15.3</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Orthography</td><td class="mod-cell">Spelling</td><td class="num-cell med">11.2</td><td class="num-cell">3.1</td><td class="num-cell">7.1</td><td class="num-cell">5.1</td><td class="num-cell low">2.0</td><td class="num-cell">4.1</td><td class="num-cell">7.1</td><td class="num-cell">4.1</td><td class="num-cell">5.5</td></tr>
+                            <tr><td class="mod-cell">Capitalization</td><td class="num-cell high">15.2</td><td class="num-cell med">14.1</td><td class="num-cell">7.1</td><td class="num-cell">7.1</td><td class="num-cell">4.0</td><td class="num-cell">5.1</td><td class="num-cell low">2.0</td><td class="num-cell">6.1</td><td class="num-cell">7.6</td></tr>
+                            <tr><td class="mod-cell">Punctuation</td><td class="num-cell low">1.0</td><td class="num-cell">7.1</td><td class="num-cell low">1.0</td><td class="num-cell low">1.0</td><td class="num-cell">3.0</td><td class="num-cell low">1.0</td><td class="num-cell low">2.0</td><td class="num-cell">4.0</td><td class="num-cell low">2.5</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Morphology</td><td class="mod-cell">Derivation</td><td class="num-cell">4.1</td><td class="num-cell">3.1</td><td class="num-cell">5.1</td><td class="num-cell">4.1</td><td class="num-cell low">1.0</td><td class="num-cell low">1.0</td><td class="num-cell">5.1</td><td class="num-cell low">2.0</td><td class="num-cell">3.2</td></tr>
+                            <tr><td class="mod-cell">Compound</td><td class="num-cell">6.2</td><td class="num-cell">4.2</td><td class="num-cell">3.1</td><td class="num-cell">5.2</td><td class="num-cell">6.2</td><td class="num-cell">6.2</td><td class="num-cell">3.1</td><td class="num-cell">4.2</td><td class="num-cell">4.8</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Syntax</td><td class="mod-cell">Voice</td><td class="num-cell high">35.8</td><td class="num-cell high">34.7</td><td class="num-cell high">41.1</td><td class="num-cell high">26.3</td><td class="num-cell high">15.8</td><td class="num-cell high">30.5</td><td class="num-cell">9.5</td><td class="num-cell high">15.8</td><td class="num-cell high">26.2</td></tr>
+                            <tr><td class="mod-cell">Grammar</td><td class="num-cell high">30.6</td><td class="num-cell high">27.8</td><td class="num-cell high">19.4</td><td class="num-cell high">22.2</td><td class="num-cell high">18.1</td><td class="num-cell high">19.4</td><td class="num-cell high">16.7</td><td class="num-cell high">20.8</td><td class="num-cell high">21.9</td></tr>
+                            <tr><td class="mod-cell">Conjunction</td><td class="num-cell">5.2</td><td class="num-cell med">10.3</td><td class="num-cell">8.2</td><td class="num-cell">8.2</td><td class="num-cell">4.1</td><td class="num-cell">7.2</td><td class="num-cell">5.2</td><td class="num-cell">6.2</td><td class="num-cell">6.8</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Semantics</td><td class="mod-cell">Concept</td><td class="num-cell">8.0</td><td class="num-cell">3.0</td><td class="num-cell">5.0</td><td class="num-cell med">11.0</td><td class="num-cell high">18.0</td><td class="num-cell">9.0</td><td class="num-cell med">10.0</td><td class="num-cell med">10.0</td><td class="num-cell">9.2</td></tr>
+                            <tr><td class="mod-cell">Negation</td><td class="num-cell high">25.5</td><td class="num-cell high">23.5</td><td class="num-cell high">24.5</td><td class="num-cell high">21.4</td><td class="num-cell high">24.5</td><td class="num-cell high">22.4</td><td class="num-cell high">22.4</td><td class="num-cell high">30.6</td><td class="num-cell high">24.4</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Discourse</td><td class="mod-cell">Markers</td><td class="num-cell">8.0</td><td class="num-cell">6.0</td><td class="num-cell">8.0</td><td class="num-cell high">19.0</td><td class="num-cell med">10.0</td><td class="num-cell">7.0</td><td class="num-cell">9.0</td><td class="num-cell med">11.0</td><td class="num-cell">9.8</td></tr>
+                            <tr><td class="mod-cell">Appraisal</td><td class="num-cell">5.0</td><td class="num-cell">8.0</td><td class="num-cell">4.0</td><td class="num-cell">8.0</td><td class="num-cell">7.0</td><td class="num-cell">9.0</td><td class="num-cell">5.0</td><td class="num-cell">7.0</td><td class="num-cell">6.6</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Varieties</td><td class="mod-cell">Style</td><td class="num-cell high">16.0</td><td class="num-cell high">19.0</td><td class="num-cell high">18.0</td><td class="num-cell high">19.0</td><td class="num-cell med">14.0</td><td class="num-cell med">14.0</td><td class="num-cell med">14.0</td><td class="num-cell med">12.0</td><td class="num-cell high">15.8</td></tr>
+                            <tr><td class="mod-cell">Dialect</td><td class="num-cell">8.3</td><td class="num-cell high">26.9</td><td class="num-cell high">22.2</td><td class="num-cell high">24.5</td><td class="num-cell med">11.8</td><td class="num-cell high">16.7</td><td class="num-cell low">2.9</td><td class="num-cell med">12.7</td><td class="num-cell high">15.8</td></tr>
+                            <tr class="avg-row"><td class="cat-cell">Average</td><td></td><td class="num-cell med">12.7</td><td class="num-cell med">13.2</td><td class="num-cell med">11.9</td><td class="num-cell med">12.7</td><td class="num-cell">9.7</td><td class="num-cell med">10.7</td><td class="num-cell">7.7</td><td class="num-cell med">10.5</td><td class="num-cell med">11.1</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-caption">Voice and Grammar modifications cause highest unrobustness (26%, 22%). GPT-5 shows best overall robustness (7.7% avg).</p>
+            </div>
+
+            <!-- Dialogue -->
+            <div class="tab-panel" id="dialogue" role="tabpanel">
+                <h3>Dialogue Understanding <span class="task-badge cls">Classification</span></h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Category</th><th>Modification</th><th>BERT</th><th>GPT-2</th><th>T5</th><th>GPT-4o</th><th>Claude</th><th>Llama</th><th>GPT-5</th><th>DS R1</th><th>Avg</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="cat-cell" rowspan="3">Bias</td><td class="mod-cell">Temporal</td><td class="num-cell">8.0</td><td class="num-cell">6.0</td><td class="num-cell">7.0</td><td class="num-cell low">2.0</td><td class="num-cell">5.0</td><td class="num-cell low">1.0</td><td class="num-cell">3.0</td><td class="num-cell low">2.0</td><td class="num-cell">4.2</td></tr>
+                            <tr><td class="mod-cell">Geographical</td><td class="num-cell">6.5</td><td class="num-cell">8.7</td><td class="num-cell med">12.0</td><td class="num-cell med">13.0</td><td class="num-cell high">15.2</td><td class="num-cell med">12.0</td><td class="num-cell high">18.5</td><td class="num-cell med">13.0</td><td class="num-cell med">12.4</td></tr>
+                            <tr><td class="mod-cell">Length</td><td class="num-cell med">10.0</td><td class="num-cell">6.0</td><td class="num-cell">5.0</td><td class="num-cell">4.0</td><td class="num-cell">6.0</td><td class="num-cell low">1.0</td><td class="num-cell">6.0</td><td class="num-cell">7.0</td><td class="num-cell">5.6</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Orthography</td><td class="mod-cell">Spelling</td><td class="num-cell">6.0</td><td class="num-cell">6.0</td><td class="num-cell">4.0</td><td class="num-cell">8.0</td><td class="num-cell">3.0</td><td class="num-cell low">2.0</td><td class="num-cell low">1.0</td><td class="num-cell">6.0</td><td class="num-cell">4.5</td></tr>
+                            <tr><td class="mod-cell">Capitalization</td><td class="num-cell low">0.0</td><td class="num-cell">6.2</td><td class="num-cell">6.2</td><td class="num-cell">3.1</td><td class="num-cell low">2.1</td><td class="num-cell low">2.1</td><td class="num-cell">4.2</td><td class="num-cell low">1.0</td><td class="num-cell">3.1</td></tr>
+                            <tr><td class="mod-cell">Punctuation</td><td class="num-cell">4.0</td><td class="num-cell low">2.0</td><td class="num-cell">8.0</td><td class="num-cell">3.0</td><td class="num-cell">3.0</td><td class="num-cell low">1.0</td><td class="num-cell">5.0</td><td class="num-cell low">2.0</td><td class="num-cell">3.5</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Morphology</td><td class="mod-cell">Derivation</td><td class="num-cell low">0.0</td><td class="num-cell low">2.2</td><td class="num-cell low">1.1</td><td class="num-cell">4.3</td><td class="num-cell">5.4</td><td class="num-cell low">1.1</td><td class="num-cell">5.4</td><td class="num-cell">6.5</td><td class="num-cell">3.2</td></tr>
+                            <tr><td class="mod-cell">Compound</td><td class="num-cell">6.0</td><td class="num-cell">4.0</td><td class="num-cell">3.0</td><td class="num-cell">4.0</td><td class="num-cell">7.0</td><td class="num-cell low">1.0</td><td class="num-cell">8.0</td><td class="num-cell">6.0</td><td class="num-cell">4.9</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Syntax</td><td class="mod-cell">Voice</td><td class="num-cell">9.0</td><td class="num-cell med">11.0</td><td class="num-cell">7.0</td><td class="num-cell">7.0</td><td class="num-cell low">2.0</td><td class="num-cell">3.0</td><td class="num-cell">9.0</td><td class="num-cell">5.0</td><td class="num-cell">6.6</td></tr>
+                            <tr><td class="mod-cell">Grammar</td><td class="num-cell med">14.3</td><td class="num-cell med">12.9</td><td class="num-cell">7.1</td><td class="num-cell high">20.6</td><td class="num-cell">7.4</td><td class="num-cell med">11.8</td><td class="num-cell high">16.2</td><td class="num-cell high">19.1</td><td class="num-cell med">13.7</td></tr>
+                            <tr><td class="mod-cell">Conjunction</td><td class="num-cell">5.0</td><td class="num-cell">4.0</td><td class="num-cell">7.0</td><td class="num-cell">6.0</td><td class="num-cell low">1.0</td><td class="num-cell low">2.0</td><td class="num-cell">4.0</td><td class="num-cell">4.0</td><td class="num-cell">4.1</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Semantics</td><td class="mod-cell">Concept</td><td class="num-cell">7.0</td><td class="num-cell">5.0</td><td class="num-cell">4.0</td><td class="num-cell">8.0</td><td class="num-cell">7.0</td><td class="num-cell low">2.0</td><td class="num-cell med">10.0</td><td class="num-cell">6.0</td><td class="num-cell">6.1</td></tr>
+                            <tr><td class="mod-cell">Negation</td><td class="num-cell high">29.0</td><td class="num-cell high">39.0</td><td class="num-cell high">31.0</td><td class="num-cell high">31.0</td><td class="num-cell high">30.0</td><td class="num-cell high">30.0</td><td class="num-cell high">25.0</td><td class="num-cell high">25.0</td><td class="num-cell high">30.0</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Discourse</td><td class="mod-cell">Markers</td><td class="num-cell">5.7</td><td class="num-cell">9.2</td><td class="num-cell">3.4</td><td class="num-cell">3.4</td><td class="num-cell low">2.3</td><td class="num-cell">3.4</td><td class="num-cell">5.7</td><td class="num-cell">5.7</td><td class="num-cell">4.9</td></tr>
+                            <tr><td class="mod-cell">Appraisal</td><td class="num-cell">6.0</td><td class="num-cell med">10.0</td><td class="num-cell">5.0</td><td class="num-cell">7.0</td><td class="num-cell">6.0</td><td class="num-cell">4.0</td><td class="num-cell med">10.0</td><td class="num-cell med">11.0</td><td class="num-cell">7.4</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Varieties</td><td class="mod-cell">Style</td><td class="num-cell med">12.0</td><td class="num-cell med">10.0</td><td class="num-cell med">12.0</td><td class="num-cell">6.0</td><td class="num-cell">4.0</td><td class="num-cell low">2.0</td><td class="num-cell">6.0</td><td class="num-cell">6.0</td><td class="num-cell">7.2</td></tr>
+                            <tr><td class="mod-cell">Dialect</td><td class="num-cell high">20.8</td><td class="num-cell">5.7</td><td class="num-cell">9.4</td><td class="num-cell med">11.3</td><td class="num-cell high">15.1</td><td class="num-cell">7.5</td><td class="num-cell">5.7</td><td class="num-cell med">13.2</td><td class="num-cell med">11.1</td></tr>
+                            <tr class="avg-row"><td class="cat-cell">Average</td><td></td><td class="num-cell">8.8</td><td class="num-cell">8.7</td><td class="num-cell">7.8</td><td class="num-cell">8.3</td><td class="num-cell">7.1</td><td class="num-cell">5.1</td><td class="num-cell">8.4</td><td class="num-cell">8.2</td><td class="num-cell">7.8</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-caption">Negation causes severe brittleness (30% avg). Llama 3.1 shows best robustness (5.1% avg) on dialogue.</p>
+            </div>
+
+            <!-- NER -->
+            <div class="tab-panel" id="ner" role="tabpanel">
+                <h3>Named Entity Recognition <span class="task-badge cls">Classification</span></h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Category</th><th>Modification</th><th>BERT</th><th>GPT-2</th><th>T5</th><th>GPT-4o</th><th>Claude</th><th>Llama</th><th>GPT-5</th><th>DS R1</th><th>Avg</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="cat-cell" rowspan="3">Bias</td><td class="mod-cell">Temporal</td><td class="num-cell">3.7</td><td class="num-cell">3.0</td><td class="num-cell low">1.2</td><td class="num-cell">6.2</td><td class="num-cell">4.3</td><td class="num-cell low">1.8</td><td class="num-cell">7.7</td><td class="num-cell med">10.6</td><td class="num-cell">4.8</td></tr>
+                            <tr><td class="mod-cell">Geographical</td><td class="num-cell high">25.1</td><td class="num-cell high">27.6</td><td class="num-cell high">29.0</td><td class="num-cell high">22.3</td><td class="num-cell high">26.0</td><td class="num-cell high">27.0</td><td class="num-cell high">22.0</td><td class="num-cell high">27.8</td><td class="num-cell high">25.8</td></tr>
+                            <tr><td class="mod-cell">Length</td><td class="num-cell med">11.8</td><td class="num-cell med">12.2</td><td class="num-cell med">13.1</td><td class="num-cell med">12.7</td><td class="num-cell high">15.7</td><td class="num-cell">6.4</td><td class="num-cell">9.7</td><td class="num-cell med">12.6</td><td class="num-cell med">11.8</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Orthography</td><td class="mod-cell">Spelling</td><td class="num-cell">4.3</td><td class="num-cell low">2.5</td><td class="num-cell low">1.4</td><td class="num-cell">6.6</td><td class="num-cell">3.0</td><td class="num-cell">3.9</td><td class="num-cell">7.3</td><td class="num-cell med">11.4</td><td class="num-cell">5.0</td></tr>
+                            <tr><td class="mod-cell">Capitalization</td><td class="num-cell low">0.9</td><td class="num-cell high">19.3</td><td class="num-cell med">13.1</td><td class="num-cell med">11.3</td><td class="num-cell">8.9</td><td class="num-cell high">15.3</td><td class="num-cell">9.1</td><td class="num-cell med">13.6</td><td class="num-cell med">11.5</td></tr>
+                            <tr><td class="mod-cell">Punctuation</td><td class="num-cell">6.5</td><td class="num-cell">3.7</td><td class="num-cell">4.9</td><td class="num-cell">7.1</td><td class="num-cell">9.1</td><td class="num-cell">7.9</td><td class="num-cell">7.8</td><td class="num-cell high">15.0</td><td class="num-cell">7.8</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Morphology</td><td class="mod-cell">Derivation</td><td class="num-cell low">1.9</td><td class="num-cell">4.2</td><td class="num-cell">5.8</td><td class="num-cell">3.7</td><td class="num-cell low">2.0</td><td class="num-cell low">1.3</td><td class="num-cell">9.5</td><td class="num-cell">8.2</td><td class="num-cell">4.6</td></tr>
+                            <tr><td class="mod-cell">Compound</td><td class="num-cell">3.1</td><td class="num-cell low">0.6</td><td class="num-cell">5.2</td><td class="num-cell">3.1</td><td class="num-cell low">1.7</td><td class="num-cell low">1.0</td><td class="num-cell">7.0</td><td class="num-cell med">12.9</td><td class="num-cell">4.3</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Syntax</td><td class="mod-cell">Voice</td><td class="num-cell">7.8</td><td class="num-cell med">10.8</td><td class="num-cell">5.7</td><td class="num-cell">7.5</td><td class="num-cell">5.5</td><td class="num-cell">4.5</td><td class="num-cell">8.3</td><td class="num-cell med">11.3</td><td class="num-cell">7.7</td></tr>
+                            <tr><td class="mod-cell">Grammar</td><td class="num-cell">8.0</td><td class="num-cell high">15.9</td><td class="num-cell med">10.5</td><td class="num-cell">8.3</td><td class="num-cell">3.5</td><td class="num-cell">5.3</td><td class="num-cell med">10.8</td><td class="num-cell med">12.4</td><td class="num-cell">9.3</td></tr>
+                            <tr><td class="mod-cell">Conjunction</td><td class="num-cell">9.1</td><td class="num-cell">7.6</td><td class="num-cell">7.7</td><td class="num-cell">9.4</td><td class="num-cell">7.5</td><td class="num-cell">8.0</td><td class="num-cell med">11.7</td><td class="num-cell med">13.2</td><td class="num-cell">9.3</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Semantics</td><td class="mod-cell">Concept</td><td class="num-cell">5.0</td><td class="num-cell">8.9</td><td class="num-cell">5.3</td><td class="num-cell">6.5</td><td class="num-cell">4.8</td><td class="num-cell">3.9</td><td class="num-cell">8.5</td><td class="num-cell">9.4</td><td class="num-cell">6.5</td></tr>
+                            <tr><td class="mod-cell">Negation</td><td class="num-cell">4.8</td><td class="num-cell">5.2</td><td class="num-cell">6.5</td><td class="num-cell">8.2</td><td class="num-cell">3.9</td><td class="num-cell">4.6</td><td class="num-cell med">10.5</td><td class="num-cell high">15.2</td><td class="num-cell">7.4</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Discourse</td><td class="mod-cell">Markers</td><td class="num-cell">4.7</td><td class="num-cell low">1.6</td><td class="num-cell">5.4</td><td class="num-cell low">2.2</td><td class="num-cell low">1.9</td><td class="num-cell">3.2</td><td class="num-cell">6.3</td><td class="num-cell">8.7</td><td class="num-cell">4.2</td></tr>
+                            <tr><td class="mod-cell">Appraisal</td><td class="num-cell">5.5</td><td class="num-cell low">2.6</td><td class="num-cell">4.8</td><td class="num-cell">3.2</td><td class="num-cell">3.1</td><td class="num-cell low">2.9</td><td class="num-cell">7.1</td><td class="num-cell med">14.0</td><td class="num-cell">5.4</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Varieties</td><td class="mod-cell">Style</td><td class="num-cell med">11.8</td><td class="num-cell med">12.2</td><td class="num-cell med">13.1</td><td class="num-cell">3.6</td><td class="num-cell">4.8</td><td class="num-cell">6.4</td><td class="num-cell">7.4</td><td class="num-cell med">10.9</td><td class="num-cell">8.8</td></tr>
+                            <tr><td class="mod-cell">Dialect</td><td class="num-cell med">12.6</td><td class="num-cell">7.4</td><td class="num-cell">8.4</td><td class="num-cell">5.9</td><td class="num-cell">8.9</td><td class="num-cell">4.7</td><td class="num-cell">7.0</td><td class="num-cell med">13.2</td><td class="num-cell">8.5</td></tr>
+                            <tr class="avg-row"><td class="cat-cell">Average</td><td></td><td class="num-cell">7.4</td><td class="num-cell">8.6</td><td class="num-cell">8.3</td><td class="num-cell">7.5</td><td class="num-cell">6.7</td><td class="num-cell">6.4</td><td class="num-cell">9.3</td><td class="num-cell med">13.0</td><td class="num-cell">8.4</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-caption">Geographical bias causes highest NER brittleness (25.8%). DeepSeek R1 shows highest unrobustness (13% avg).</p>
+            </div>
+
+            <!-- Sentiment -->
+            <div class="tab-panel" id="sentiment" role="tabpanel">
+                <h3>Sentiment Analysis <span class="task-badge cls">Classification</span></h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Category</th><th>Modification</th><th>BERT</th><th>GPT-2</th><th>T5</th><th>GPT-4o</th><th>Claude</th><th>Llama</th><th>GPT-5</th><th>DS R1</th><th>Avg</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="cat-cell" rowspan="3">Bias</td><td class="mod-cell">Temporal</td><td class="num-cell">5.0</td><td class="num-cell">5.0</td><td class="num-cell">3.0</td><td class="num-cell low">0.0</td><td class="num-cell">8.0</td><td class="num-cell low">1.0</td><td class="num-cell">3.0</td><td class="num-cell">3.0</td><td class="num-cell">3.5</td></tr>
+                            <tr><td class="mod-cell">Geographical</td><td class="num-cell">5.0</td><td class="num-cell">4.0</td><td class="num-cell">3.0</td><td class="num-cell">9.0</td><td class="num-cell">8.0</td><td class="num-cell">7.0</td><td class="num-cell">4.0</td><td class="num-cell">8.0</td><td class="num-cell">6.0</td></tr>
+                            <tr><td class="mod-cell">Length</td><td class="num-cell">3.0</td><td class="num-cell low">2.0</td><td class="num-cell">3.0</td><td class="num-cell">3.0</td><td class="num-cell">9.0</td><td class="num-cell low">2.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.0</td><td class="num-cell">3.0</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Orthography</td><td class="mod-cell">Spelling</td><td class="num-cell">4.0</td><td class="num-cell">4.0</td><td class="num-cell low">0.0</td><td class="num-cell low">0.0</td><td class="num-cell">6.0</td><td class="num-cell">3.0</td><td class="num-cell low">0.0</td><td class="num-cell low">0.0</td><td class="num-cell low">2.1</td></tr>
+                            <tr><td class="mod-cell">Capitalization</td><td class="num-cell low">0.0</td><td class="num-cell">3.0</td><td class="num-cell">3.0</td><td class="num-cell low">1.0</td><td class="num-cell">7.1</td><td class="num-cell">3.0</td><td class="num-cell low">0.0</td><td class="num-cell">3.0</td><td class="num-cell low">2.5</td></tr>
+                            <tr><td class="mod-cell">Punctuation</td><td class="num-cell low">1.0</td><td class="num-cell low">2.0</td><td class="num-cell low">0.0</td><td class="num-cell low">1.0</td><td class="num-cell">3.0</td><td class="num-cell">3.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.5</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Morphology</td><td class="mod-cell">Derivation</td><td class="num-cell">3.4</td><td class="num-cell">5.7</td><td class="num-cell low">2.3</td><td class="num-cell low">2.3</td><td class="num-cell">6.9</td><td class="num-cell low">2.3</td><td class="num-cell">3.4</td><td class="num-cell">4.6</td><td class="num-cell">3.9</td></tr>
+                            <tr><td class="mod-cell">Compound</td><td class="num-cell">3.2</td><td class="num-cell">8.4</td><td class="num-cell">3.2</td><td class="num-cell low">2.1</td><td class="num-cell">5.3</td><td class="num-cell low">1.1</td><td class="num-cell">3.2</td><td class="num-cell">4.2</td><td class="num-cell">3.8</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Syntax</td><td class="mod-cell">Voice</td><td class="num-cell">9.0</td><td class="num-cell med">10.0</td><td class="num-cell">9.0</td><td class="num-cell">4.0</td><td class="num-cell med">10.0</td><td class="num-cell">3.0</td><td class="num-cell">5.0</td><td class="num-cell">4.0</td><td class="num-cell">6.8</td></tr>
+                            <tr><td class="mod-cell">Grammar</td><td class="num-cell">4.5</td><td class="num-cell med">12.1</td><td class="num-cell">3.0</td><td class="num-cell">4.5</td><td class="num-cell">7.6</td><td class="num-cell">4.5</td><td class="num-cell">4.5</td><td class="num-cell">4.5</td><td class="num-cell">5.7</td></tr>
+                            <tr><td class="mod-cell">Conjunction</td><td class="num-cell">3.0</td><td class="num-cell">6.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.0</td><td class="num-cell">3.0</td><td class="num-cell">3.0</td><td class="num-cell low">0.0</td><td class="num-cell low">0.0</td><td class="num-cell low">2.1</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Semantics</td><td class="mod-cell">Concept</td><td class="num-cell">6.0</td><td class="num-cell">6.0</td><td class="num-cell">5.0</td><td class="num-cell">4.0</td><td class="num-cell">4.0</td><td class="num-cell low">2.0</td><td class="num-cell low">1.0</td><td class="num-cell">5.0</td><td class="num-cell">4.1</td></tr>
+                            <tr><td class="mod-cell">Negation</td><td class="num-cell high">22.9</td><td class="num-cell high">20.8</td><td class="num-cell high">25.0</td><td class="num-cell high">16.7</td><td class="num-cell high">17.7</td><td class="num-cell high">15.6</td><td class="num-cell high">16.7</td><td class="num-cell high">17.7</td><td class="num-cell high">19.1</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Discourse</td><td class="mod-cell">Markers</td><td class="num-cell">3.0</td><td class="num-cell">6.1</td><td class="num-cell">4.0</td><td class="num-cell low">1.0</td><td class="num-cell med">12.1</td><td class="num-cell">3.0</td><td class="num-cell low">2.0</td><td class="num-cell">3.0</td><td class="num-cell">4.3</td></tr>
+                            <tr><td class="mod-cell">Sentiment</td><td class="num-cell high">19.0</td><td class="num-cell high">16.0</td><td class="num-cell med">12.0</td><td class="num-cell med">14.0</td><td class="num-cell high">15.0</td><td class="num-cell high">16.0</td><td class="num-cell med">11.0</td><td class="num-cell med">10.0</td><td class="num-cell med">14.1</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Varieties</td><td class="mod-cell">Casual</td><td class="num-cell">9.0</td><td class="num-cell">9.0</td><td class="num-cell">5.0</td><td class="num-cell">3.0</td><td class="num-cell">7.0</td><td class="num-cell">6.0</td><td class="num-cell">3.0</td><td class="num-cell low">2.0</td><td class="num-cell">5.5</td></tr>
+                            <tr><td class="mod-cell">Dialect</td><td class="num-cell">9.8</td><td class="num-cell">9.8</td><td class="num-cell">7.8</td><td class="num-cell">4.9</td><td class="num-cell">6.9</td><td class="num-cell">5.9</td><td class="num-cell low">2.9</td><td class="num-cell">3.9</td><td class="num-cell">6.5</td></tr>
+                            <tr class="avg-row"><td class="cat-cell">Average</td><td></td><td class="num-cell">6.5</td><td class="num-cell">7.6</td><td class="num-cell">5.3</td><td class="num-cell">4.2</td><td class="num-cell">8.0</td><td class="num-cell">4.8</td><td class="num-cell">3.6</td><td class="num-cell">4.4</td><td class="num-cell">5.6</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-caption">Negation (19.1%) and Sentiment shifts (14.1%) cause most brittleness. GPT-5 shows best robustness (3.6%).</p>
+            </div>
+
+            <!-- GSM -->
+            <div class="tab-panel" id="gsm" role="tabpanel">
+                <h3>Grade School Math <span class="task-badge gen">Generation</span></h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Category</th><th>Modification</th><th>GPT-4o</th><th>Claude-3.5</th><th>Llama 3.1</th><th>GPT-5</th><th>DS R1</th><th>Avg</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="cat-cell" rowspan="3">Bias</td><td class="mod-cell">Temporal</td><td class="num-cell low">1.0</td><td class="num-cell low">2.0</td><td class="num-cell">4.0</td><td class="num-cell low">0.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.6</td></tr>
+                            <tr><td class="mod-cell">Geographical</td><td class="num-cell">5.0</td><td class="num-cell">5.0</td><td class="num-cell">7.0</td><td class="num-cell low">1.0</td><td class="num-cell low">2.0</td><td class="num-cell">4.0</td></tr>
+                            <tr><td class="mod-cell">Length</td><td class="num-cell">4.0</td><td class="num-cell low">2.0</td><td class="num-cell low">2.0</td><td class="num-cell low">0.0</td><td class="num-cell low">2.0</td><td class="num-cell low">2.0</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Orthography</td><td class="mod-cell">Spelling</td><td class="num-cell low">1.0</td><td class="num-cell low">0.0</td><td class="num-cell low">2.0</td><td class="num-cell low">1.0</td><td class="num-cell low">0.0</td><td class="num-cell low">0.8</td></tr>
+                            <tr><td class="mod-cell">Capitalization</td><td class="num-cell">3.0</td><td class="num-cell low">1.0</td><td class="num-cell">5.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.0</td><td class="num-cell low">2.2</td></tr>
+                            <tr><td class="mod-cell">Punctuation</td><td class="num-cell low">0.0</td><td class="num-cell low">0.0</td><td class="num-cell">5.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.4</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Semantics</td><td class="mod-cell">Concept</td><td class="num-cell low">1.0</td><td class="num-cell low">0.0</td><td class="num-cell">5.0</td><td class="num-cell low">2.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.8</td></tr>
+                            <tr><td class="mod-cell">Negation</td><td class="num-cell high">15.0</td><td class="num-cell high">15.0</td><td class="num-cell high">18.0</td><td class="num-cell">7.0</td><td class="num-cell">9.0</td><td class="num-cell med">12.8</td></tr>
+                            <tr><td class="cat-cell">Discourse</td><td class="mod-cell">Appraisal</td><td class="num-cell low">0.0</td><td class="num-cell low">0.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.0</td><td class="num-cell low">0.6</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Varieties</td><td class="mod-cell">Style</td><td class="num-cell">4.0</td><td class="num-cell">3.0</td><td class="num-cell">6.0</td><td class="num-cell">4.0</td><td class="num-cell">3.0</td><td class="num-cell">4.0</td></tr>
+                            <tr><td class="mod-cell">Dialect</td><td class="num-cell low">2.0</td><td class="num-cell">4.0</td><td class="num-cell">6.0</td><td class="num-cell low">1.0</td><td class="num-cell low">2.0</td><td class="num-cell">3.0</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Syntax</td><td class="mod-cell">Conjunction</td><td class="num-cell low">0.0</td><td class="num-cell low">1.0</td><td class="num-cell">4.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.0</td><td class="num-cell low">1.4</td></tr>
+                            <tr><td class="mod-cell">Voice</td><td class="num-cell low">2.0</td><td class="num-cell low">2.0</td><td class="num-cell">6.0</td><td class="num-cell low">1.0</td><td class="num-cell low">2.0</td><td class="num-cell low">2.6</td></tr>
+                            <tr class="avg-row"><td class="cat-cell">Average</td><td></td><td class="num-cell low">2.9</td><td class="num-cell low">2.7</td><td class="num-cell">5.5</td><td class="num-cell low">1.6</td><td class="num-cell low">2.0</td><td class="num-cell low">2.9</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-caption">Math reasoning is most robust overall (2.9% avg). Negation remains the key challenge (12.8%). GPT-5 shows best performance (1.6%).</p>
+            </div>
+
+            <!-- IFEval -->
+            <div class="tab-panel" id="ifeval" role="tabpanel">
+                <h3>Instruction Following <span class="task-badge gen">Generation</span></h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Category</th><th>Modification</th><th>GPT-4o</th><th>Claude-3.5</th><th>Llama 3.1</th><th>GPT-5</th><th>DS R1</th><th>Avg</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="cat-cell" rowspan="3">Bias</td><td class="mod-cell">Temporal</td><td class="num-cell med">11.1</td><td class="num-cell">4.0</td><td class="num-cell med">12.1</td><td class="num-cell">5.1</td><td class="num-cell med">12.1</td><td class="num-cell">8.9</td></tr>
+                            <tr><td class="mod-cell">Geographical</td><td class="num-cell">9.0</td><td class="num-cell med">12.0</td><td class="num-cell med">14.0</td><td class="num-cell">9.0</td><td class="num-cell med">10.0</td><td class="num-cell med">10.8</td></tr>
+                            <tr><td class="mod-cell">Length</td><td class="num-cell med">11.0</td><td class="num-cell med">10.0</td><td class="num-cell high">18.0</td><td class="num-cell">6.0</td><td class="num-cell high">16.0</td><td class="num-cell med">12.2</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Orthography</td><td class="mod-cell">Capitalization</td><td class="num-cell">8.1</td><td class="num-cell">5.1</td><td class="num-cell med">10.1</td><td class="num-cell">9.1</td><td class="num-cell med">13.1</td><td class="num-cell">9.1</td></tr>
+                            <tr><td class="mod-cell">Punctuation</td><td class="num-cell">7.1</td><td class="num-cell">3.0</td><td class="num-cell med">13.1</td><td class="num-cell">8.1</td><td class="num-cell med">12.1</td><td class="num-cell">8.7</td></tr>
+                            <tr><td class="mod-cell">Spelling</td><td class="num-cell">3.1</td><td class="num-cell">4.1</td><td class="num-cell">7.2</td><td class="num-cell">6.2</td><td class="num-cell">8.2</td><td class="num-cell">5.8</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Syntax</td><td class="mod-cell">Conjunction</td><td class="num-cell med">11.0</td><td class="num-cell">7.0</td><td class="num-cell">6.0</td><td class="num-cell">8.0</td><td class="num-cell med">11.0</td><td class="num-cell">8.6</td></tr>
+                            <tr><td class="mod-cell">Voice</td><td class="num-cell">9.0</td><td class="num-cell">9.0</td><td class="num-cell med">10.0</td><td class="num-cell">6.0</td><td class="num-cell high">15.0</td><td class="num-cell">9.8</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Semantics</td><td class="mod-cell">Concept</td><td class="num-cell">9.1</td><td class="num-cell">7.1</td><td class="num-cell med">11.1</td><td class="num-cell">7.1</td><td class="num-cell">7.1</td><td class="num-cell">8.3</td></tr>
+                            <tr><td class="mod-cell">Negation</td><td class="num-cell high">24.0</td><td class="num-cell high">22.0</td><td class="num-cell high">24.0</td><td class="num-cell high">23.0</td><td class="num-cell high">23.0</td><td class="num-cell high">23.2</td></tr>
+                            <tr><td class="cat-cell">Discourse</td><td class="mod-cell">Appraisal</td><td class="num-cell">7.1</td><td class="num-cell">4.1</td><td class="num-cell med">11.2</td><td class="num-cell">7.1</td><td class="num-cell">6.1</td><td class="num-cell">7.1</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Varieties</td><td class="mod-cell">Style</td><td class="num-cell high">18.0</td><td class="num-cell">7.0</td><td class="num-cell med">10.0</td><td class="num-cell">9.0</td><td class="num-cell med">11.0</td><td class="num-cell med">11.0</td></tr>
+                            <tr><td class="mod-cell">Dialect</td><td class="num-cell med">13.0</td><td class="num-cell med">13.0</td><td class="num-cell med">12.0</td><td class="num-cell med">11.0</td><td class="num-cell high">15.0</td><td class="num-cell med">12.8</td></tr>
+                            <tr class="avg-row"><td class="cat-cell">Average</td><td></td><td class="num-cell med">10.8</td><td class="num-cell">8.3</td><td class="num-cell med">12.2</td><td class="num-cell">8.8</td><td class="num-cell med">12.3</td><td class="num-cell med">10.5</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-caption">IFEval shows highest overall unrobustness (10.5% avg). Negation (23.2%) and Dialect (12.8%) cause most failures.</p>
+            </div>
+
+            <!-- Scaling -->
+            <div class="tab-panel" id="scaling" role="tabpanel">
+                <h3>Llama Model Scaling <span class="task-badge gen">GSM Task</span></h3>
+                <p style="margin-bottom: 20px; color: var(--gray-700);">How does model size affect robustness? We compare Llama 3.1 at 8B, 70B, and 405B parameters on the GSM math task.</p>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Category</th><th>Modification</th><th>Llama 8B</th><th>Llama 70B</th><th>Llama 405B</th><th>Avg</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="cat-cell" rowspan="3">Bias</td><td class="mod-cell">Temporal</td><td class="num-cell">8.0</td><td class="num-cell">5.0</td><td class="num-cell">4.0</td><td class="num-cell">5.7</td></tr>
+                            <tr><td class="mod-cell">Geographical</td><td class="num-cell">8.0</td><td class="num-cell">3.0</td><td class="num-cell">7.0</td><td class="num-cell">6.0</td></tr>
+                            <tr><td class="mod-cell">Length</td><td class="num-cell">8.0</td><td class="num-cell low">2.0</td><td class="num-cell low">2.0</td><td class="num-cell">4.0</td></tr>
+                            <tr><td class="cat-cell" rowspan="3">Orthography</td><td class="mod-cell">Spelling</td><td class="num-cell med">10.0</td><td class="num-cell low">2.0</td><td class="num-cell low">2.0</td><td class="num-cell">4.7</td></tr>
+                            <tr><td class="mod-cell">Capitalization</td><td class="num-cell med">11.0</td><td class="num-cell low">2.0</td><td class="num-cell">5.0</td><td class="num-cell">6.0</td></tr>
+                            <tr><td class="mod-cell">Punctuation</td><td class="num-cell">5.0</td><td class="num-cell low">1.0</td><td class="num-cell">5.0</td><td class="num-cell">3.7</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Semantics</td><td class="mod-cell">Concept</td><td class="num-cell med">12.0</td><td class="num-cell low">1.0</td><td class="num-cell">5.0</td><td class="num-cell">6.0</td></tr>
+                            <tr><td class="mod-cell">Negation</td><td class="num-cell high">22.0</td><td class="num-cell high">17.0</td><td class="num-cell high">18.0</td><td class="num-cell high">19.0</td></tr>
+                            <tr><td class="cat-cell">Discourse</td><td class="mod-cell">Appraisal</td><td class="num-cell">7.0</td><td class="num-cell">5.0</td><td class="num-cell low">1.0</td><td class="num-cell">4.3</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Varieties</td><td class="mod-cell">Style</td><td class="num-cell high">16.0</td><td class="num-cell">6.0</td><td class="num-cell">6.0</td><td class="num-cell">9.3</td></tr>
+                            <tr><td class="mod-cell">Dialect</td><td class="num-cell med">10.0</td><td class="num-cell">6.0</td><td class="num-cell">6.0</td><td class="num-cell">7.3</td></tr>
+                            <tr><td class="cat-cell" rowspan="2">Syntax</td><td class="mod-cell">Conjunction</td><td class="num-cell med">12.0</td><td class="num-cell low">2.0</td><td class="num-cell">4.0</td><td class="num-cell">6.0</td></tr>
+                            <tr><td class="mod-cell">Voice</td><td class="num-cell med">11.0</td><td class="num-cell low">2.0</td><td class="num-cell">6.0</td><td class="num-cell">6.3</td></tr>
+                            <tr class="avg-row"><td class="cat-cell">Average</td><td></td><td class="num-cell med">10.8</td><td class="num-cell">4.2</td><td class="num-cell">5.5</td><td class="num-cell">6.8</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="table-caption">
+                    <strong>Key finding:</strong> Scaling from 8B→70B dramatically improves robustness (10.8%→4.2%), but 70B→405B shows diminishing returns (4.2%→5.5%).
+                    Negation remains challenging across all scales (17-22%). Larger models achieve higher accuracy but don't always translate to better robustness.
+                </p>
+            </div>
+
+            <p class="table-caption" style="margin-top: 24px;">
+                Color legend: <span class="high" style="padding: 2px 6px;">High</span> ≥15% &nbsp; <span class="med" style="padding: 2px 6px;">Medium</span> 10-15% &nbsp; <span class="low" style="padding: 2px 6px;">Low</span> ≤2%
+            </p>
+        </div>
+    </section>
+
+    <section id="citation">
+        <div class="container">
+            <div class="section-title">Citation</div>
+            <h2>Cite This Work</h2>
+            <div class="citation-box">
+                <button class="copy-btn" onclick="copyBibtex()">Copy</button>
+                <pre>@article{otmakhova2025fluke,
+  title     = {FLUKE: A Linguistically-Driven and Task-Agnostic
+               Framework for Robustness Evaluation},
+  author    = {Otmakhova, Yulia and Truong, Hung Thinh and
+               Mahendra, Rahmad and Zhai, Zenan and Zhu, Rongxin
+               and Beck, Daniel and Lau, Jey Han},
+  journal   = {arXiv preprint arXiv:2504.17311},
+  year      = {2025}
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            FLUKE · <a href="https://arxiv.org/abs/2504.17311">Paper</a> · <a href="https://github.com/joey234/fluke">Code</a> · <a href="https://huggingface.co/datasets/unimelb-nlp/fluke">Dataset</a> · <a href="https://fluke-viewer.pages.dev/">Demo</a>
+        </div>
+    </footer>
+
+    <script>
+        function copyBibtex() {
+            const text = document.querySelector('.citation-box pre').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetId = tab.dataset.tab;
+
+                // Update tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update panels
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+    </script>
 </body>
-</html> 
+</html>
